@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact – Vanshika Somani</title>
+    <title>Contact - Vanshika Somani</title>
+    <!-- note the .. because style.css lives one folder up -->
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -15,6 +16,31 @@
     </nav>
 
     <h1>Contact</h1>
-    <p>You can reach me via UCSD email or GitHub while I build out this page.</p>
+    <p>Use this form to email me:</p>
+
+    <form action="mailto:vsomani@ucsd.edu" method="POST" enctype="text/plain">
+        <label>
+            Your email:
+            <input name="email" type="email" required>
+        </label>
+
+        <br><br>
+
+        <label>
+            Subject:
+            <input name="subject">
+        </label>
+
+        <br><br>
+
+        <label>
+            Message:
+            <textarea name="body" rows="5" cols="40"></textarea>
+        </label>
+
+        <br><br>
+
+        <button>Send</button>
+    </form>
 </body>
 </html>
