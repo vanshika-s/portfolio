@@ -1,6 +1,9 @@
 html {
   --color-accent: oklch(44.973% 0.13316 315.922);  /* pick any oklch you like */
   accent-color: var(--color-accent);
+  color-scheme: light dark;   /* use OS theme, support both */
+  background-color: canvas;   /* system background color */
+  color: canvastext;          /* system text color */
 }
 
 body {
@@ -38,11 +41,12 @@ button {
 }
 
 nav {
+  --border-color: oklch(50% 10% 200 / 40%);  /* works in light + dark */
   display: flex;
   margin-bottom: 1rem; /* space between nav and page content */
 
   /* subtle bottom border in cool gray */
-  border-bottom: 1px solid oklch(80% 0.03 200);
+  border-bottom: 1px solid var(--border-color);
 }
 
 nav a {
@@ -54,14 +58,14 @@ nav a {
 }
 
 nav a.current {
-  border-bottom: 0.4em solid oklch(80% 0.03 200);  /* thicker bar for current page */
+  border-bottom: 0.4em solid var(--border-color);  /* thicker bar for current page */
   padding-bottom: 0.1em;                           /* reduce padding so height stays similar */
 }
 
 nav a:hover {
   border-bottom: 0.4em solid var(--color-accent);
   padding-bottom: 0.1em;
-  background-color: oklch(from var(--color-accent) 95% 5% h);
+  background-color: color-mix(in oklch, var(--color-accent), canvas 85%);
 }
 
 .projects {
