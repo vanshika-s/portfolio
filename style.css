@@ -11,18 +11,28 @@ body {
   padding-block: 1.5rem;  /* optional: space top + bottom */
 }
 
-label {
-  display: block;          /* label on its own line */
-  margin-block: 0.5rem;    /* space above and below each label+field group */
-}
-
 input,
 textarea,
 button {
-  font: inherit;           /* from Step 3.1 */
-  display: block;          /* each on its own line */
-  width: 100%;             /* take full width of the form */
-  box-sizing: border-box;  /* include padding/border inside that 100% */
+  font: inherit;
+}
+
+/* New grid layout for the form */
+form {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1em;
+}
+
+label {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+}
+
+button {
+  grid-column: 1 / -1;
+  justify-self: start;
 }
 
 nav {
