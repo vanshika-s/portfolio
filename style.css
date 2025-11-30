@@ -10,6 +10,13 @@ body {
   padding-inline: 1rem;   /* space on left + right */
   padding-block: 1.5rem;  /* optional: space top + bottom */
 }
+
+input,
+textarea,
+button {
+    font: inherit;
+}
+
 nav {
   display: flex;
   margin-bottom: 1rem; /* space between nav and page content */
