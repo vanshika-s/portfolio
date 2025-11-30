@@ -37,10 +37,28 @@ for (let p of pages) {
   let url = p.url;
   let title = p.title;
 
-  // If it's a relative URL (no "http"), prefix with BASE_PATH
+  // Prefix internal (relative) URLs with BASE_PATH
   if (!url.startsWith("http")) {
     url = BASE_PATH + url;
   }
 
-  nav.insertAdjacentHTML("beforeend", `<a href="${url}">${title}</a>`);
+  // Create <a> element
+  let a = document.createElement("a");
+  a.href = url;
+  a.textContent = title;
+  nav.append(a);
+
+  // --- highlight current page link ---
+  const isCurrent =
+    a.host === location.host && a.pathname === location.pathname;
+
+  a.classList.toggle("current", isCurrent);
+
+  // --- make external links open in new tab ---
+  const isExternal = a.host !== location.host;
+
+  if (isExternal) {
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+  }
 }
