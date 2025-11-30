@@ -21,7 +21,8 @@ button {
 form {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 1em;
+  row-gap: 0.5em;   /* vertical space between rows */
+  column-gap: 1em;  /* keep nice space between label + input */
 }
 
 label {
