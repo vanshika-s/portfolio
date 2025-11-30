@@ -6,14 +6,22 @@ body {
   padding-block: 1.5rem;  /* optional: space top + bottom */
 }
 nav {
-  display: flex;     /* enable flexbox */
+  display: flex;
+  margin-bottom: 1rem; /* space between nav and page content */
+
+  /* subtle bottom border in cool gray */
+  border-bottom: 1px solid oklch(80% 0.03 200);
 }
 
 nav a {
-  flex: 1;           /* each link takes equal width */
-  text-align: center;
+  flex: 1;                 /* equal width links */
+  text-decoration: none;   /* remove underline */
+  color: inherit;          /* use same color as body text */
+  text-align: center;      /* center the label in its box */
+  padding: 0.5em 0;        /* vertical padding; horizontal not needed for flex */
 }
 
 nav a.current {
-  font-weight: bold;
+  border-bottom: 0.4em solid oklch(80% 0.03 200);  /* thicker bar for current page */
+  padding-bottom: 0.1em;                           /* reduce padding so height stays similar */
 }
