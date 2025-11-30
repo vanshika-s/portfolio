@@ -80,3 +80,49 @@ nav a:hover {
 .projects h2 {
   margin: 0;
 }
+
+/*CV*/
+.cv {
+  display: grid;
+  gap: 2rem;
+}
+
+.cv section {
+  border-left: 4px solid var(--color-accent);
+  padding-left: 1rem;
+}
+
+.cv h2 {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.5rem 0;
+}
+
+.cv article {
+  margin-bottom: 1rem;
+}
+
+.cv h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.cv h4 {
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
+}
+
+.cv p {
+  margin: 0.25rem 0;
+}
+
+.cv time {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
+}
+
+.cv ul {
+  margin: 0.25rem 0 0.75rem 1.2rem;
+  padding: 0;
+}
