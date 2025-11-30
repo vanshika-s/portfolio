@@ -67,4 +67,16 @@ nav a:hover {
 .projects {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+  grid-auto-rows: auto;   /* rows that subgrid will use */
+  gap: 1em;               /* spacing between project cards */
+}
+
+.projects > article {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 3;   /* each card takes 3 of the parent's rows */
+}
+
+.projects h2 {
+  margin: 0;
 }
