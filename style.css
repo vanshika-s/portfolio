@@ -31,8 +31,9 @@ label {
 }
 
 button {
-  grid-column: 1 / -1;
-  justify-self: start;
+  grid-column: 1 / -1;   /* full row */
+  width: 100%;           /* full width of that row */
+  padding: 0.6em;        /* optional: similar height to inputs */
 }
 
 nav {
