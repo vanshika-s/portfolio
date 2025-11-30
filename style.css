@@ -5,3 +5,15 @@ body {
   padding-inline: 1rem;   /* space on left + right */
   padding-block: 1.5rem;  /* optional: space top + bottom */
 }
+nav {
+  display: flex;     /* enable flexbox */
+}
+
+nav a {
+  flex: 1;           /* each link takes equal width */
+  text-align: center;
+}
+
+nav a.current {
+  font-weight: bold;
+}
