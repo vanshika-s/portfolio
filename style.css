@@ -63,3 +63,8 @@ nav a:hover {
   padding-bottom: 0.1em;
   background-color: oklch(from var(--color-accent) 95% 5% h);
 }
+
+.projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+}
