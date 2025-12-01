@@ -1,62 +1,74 @@
 [
-    {
-        "title": "Lorem ipsum sit.",
-        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
-        "description": "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sint quisquam consequuntur cupiditate quis adipisci quia ipsum quod a veritatis debitis! Eveniet fuga vel ducimus minus, facilis rerum ipsum sunt culpa."
-    },
-    {
-        "title": "Quidem laboriosam facilis reprehenderit!",
-        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
-        "description": "Fugiat odio illo atque accusamus ad, possimus harum quis nobis beatae veniam, rerum voluptates nisi repellendus, incidunt cum sit. Possimus consectetur accusamus quam velit deleniti voluptates in incidunt a dolore?"
-    },
-    {
-        "title": "Ut doloremque labore sit?",
-        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
-        "description": "Nisi, porro sequi quidem molestias iusto nihil voluptates quo dolore? Nisi delectus repudiandae nulla fugit beatae vel harum aliquid aperiam molestias iste aspernatur aut ad excepturi, quas fuga, voluptate voluptatem?"
-    },
-    {
-        "title": "Alias ullam esse aperiam?",
-        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
-        "description": "Consequatur voluptate recusandae veniam nesciunt nobis sapiente. Eos enim labore culpa. Placeat vero sequi animi beatae. A cum facere dolore iste laudantium dignissimos quidem, nostrum quas quis sit optio harum."
-    },
-    {
-        "title": "Ducimus quas animi aliquam.",
-        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
-        "description": "Explicabo unde id, illo, doloremque sed incidunt voluptatibus itaque omnis autem dolorem, molestias velit ea quam error deleniti dicta. Eius dolorum eum nulla illum, illo consectetur odio non aspernatur asperiores."
-    },
-    {
-        "title": "Quae earum itaque aspernatur.",
-        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
-        "description": "Consequatur officiis illum id qui adipisci maxime quis fugit quos omnis voluptate expedita asperiores, assumenda dolor neque provident corporis itaque delectus iure explicabo esse rerum, deleniti dolorum. Aliquid, officiis beatae."
-    },
-    {
-        "title": "Adipisci corporis minima fuga.",
-        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
-        "description": "Fuga doloribus, voluptatem molestiae esse illo earum et maiores cupiditate nemo perferendis corporis iure culpa dolore blanditiis facere quibusdam asperiores eveniet porro natus laboriosam, eligendi animi corrupti aliquid. Voluptatibus, facere!"
-    },
-    {
-        "title": "Ipsa officia quas placeat.",
-        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
-        "description": "Ut illum doloremque similique earum facilis soluta, cumque exercitationem libero fuga mollitia beatae molestiae odit consequatur ullam modi officiis eum perferendis voluptatum est dicta, quos voluptate, necessitatibus excepturi labore. Non?"
-    },
-    {
-        "title": "Consequatur animi earum dolores?",
-        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
-        "description": "Amet maxime dolorem, enim harum reiciendis cupiditate corporis nobis, nesciunt quos eaque ad rerum! Dolore corporis optio pariatur nihil deleniti illum animi sed culpa porro iusto, reprehenderit natus qui laudantium."
-    },
-    {
-        "title": "Exercitationem fugiat non aut?",
-        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
-        "description": "Vitae officiis amet, hic obcaecati deleniti magnam aspernatur. Optio quam et sit atque velit animi quod eligendi, quos, aperiam possimus distinctio repellat aut corrupti iure numquam illum obcaecati rerum nemo."
-    },
-    {
-        "title": "Enim aliquam repellat cumque.",
-        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
-        "description": "Sunt, quae eius enim repellat quasi consectetur similique corporis dolorem architecto saepe, reprehenderit ab eaque cum amet facilis recusandae, voluptate beatae dolor sapiente debitis fuga! Quod aspernatur doloribus facere excepturi."
-    },
-    {
-        "title": "Minus quidem illum laboriosam.",
-        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
-        "description": "Nemo quam autem nihil in labore quisquam praesentium voluptatibus qui voluptas veritatis, vel illum. Culpa, maiores debitis? Soluta eius quos itaque aliquid exercitationem eaque, tenetur, perspiciatis quae nihil totam pariatur."
-    }
+  {
+    "title": "When It Rains, It Pours",
+    "year": "2024",
+    "image": "images/1.png",
+    "description": "Bar chart exploration of California precipitation under different climate scenarios using CMIP6 model outputs."
+  },
+  {
+    "title": "Hip Hop Vocabulary Exploration",
+    "year": "2024",
+    "image": "images/2.png",
+    "description": "Replicated and critiqued The Pudding’s ‘Largest Vocabulary in Hip Hop’ data story with my own visual encodings."
+  },
+  {
+    "title": "Interactive Rainfall Dashboard",
+    "year": "2024",
+    "image": "images/3.png",
+    "description": "Multi-view interactive dashboard that lets users explore California rainfall patterns by scenario, season, and year."
+  },
+  {
+    "title": "MoveInSync Internship – Commute Analytics Dashboard",
+    "year": "2024",
+    "image": "images/4.png",
+    "description": "Analyzed employee commute data and designed dashboards to highlight seat utilization, on-time performance, and cost."
+  },
+  {
+    "title": "Yellow.ai Internship – Conversation Flow Templates",
+    "year": "2025",
+    "image": "images/5.png",
+    "description": "Created reusable templates for AI chatbot flows and evaluated voice/chat conversations for UX and quality."
+  },
+  {
+    "title": "57 Forward – Trading Strategy Prototype",
+    "year": "2021",
+    "image": "images/6.png",
+    "description": "Built an Excel-based prototype for back-testing equity trading strategies and computing performance KPIs."
+  },
+  {
+    "title": "Mu Sigma – Data Science Foundations",
+    "year": "2020",
+    "image": "images/7.png",
+    "description": "Used SQL and structured problem-solving tools to explore datasets and present findings to a mock client."
+  },
+  {
+    "title": "Robotics Internship – Tinkercad Robot Design",
+    "year": "2020",
+    "image": "images/8.png",
+    "description": "Designed and programmed a virtual robot in Tinkercad to complete a challenge using sensor-based logic."
+  },
+  {
+    "title": "Personal – FiberLens Concept",
+    "year": "2023",
+    "image": "images/9.png",
+    "description": "Concept for a digital microscope app that lets users inspect clothing fibers to make more informed purchase choices."
+  },
+  {
+    "title": "Personal – Portfolio Website",
+    "year": "2025",
+    "image": "images/10.png",
+    "description": "This multi-page personal site with navigation, dark mode toggle, JSON-driven projects, and GitHub stats."
+  },
+  {
+    "title": "Course – Degree Audit Redesign Case Study",
+    "year": "2024",
+    "image": "images/11.png",
+    "description": "UX case study analyzing UCSD’s degree audit tool with interviews, task flows, and redesign sketches."
+  },
+  {
+    "title": "Writing Center – Tutoring Resources Mini-Site",
+    "year": "2023",
+    "image": "images/12.png",
+    "description": "Organized and drafted a resource collection for students on essay structure, grammar, and drafting strategies."
+  }
 ]

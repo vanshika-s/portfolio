@@ -72,12 +72,24 @@ export function renderProjects(projects, containerElement, headingLevel = "h2") 
     // Fall back values in case some fields are missing
     const title = project.title || "Untitled project";
     const description = project.description || "";
-    const image = project.image || "";
+    const rawImage = project.image || "";
+
+    // Build a correct image URL
+    let imageSrc = "";
+    if (rawImage) {
+      if (rawImage.startsWith("http")) {
+        // already an absolute URL
+        imageSrc = rawImage;
+      } else {
+        // relative path in our repo, e.g. "images/1.png"
+        imageSrc = BASE_PATH + rawImage;
+      }
+    }
 
     // Use innerHTML so we can dynamically set the heading tag
     article.innerHTML = `
       <${tag}>${title}</${tag}>
-      ${image ? `<img src="${image}" alt="${title}">` : ""}
+      ${imageSrc ? `<img src="${imageSrc}" alt="${title}">` : ""}
       <p>${description}</p>
     `;
 
