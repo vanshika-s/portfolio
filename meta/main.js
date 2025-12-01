@@ -130,11 +130,23 @@ function updateTooltipVisibility(isVisible) {
 
 function updateTooltipPosition(event) {
   const tooltip = document.getElementById("commit-tooltip");
-  const offset = 12; // little nudge away from cursor
-  tooltip.style.left = `${event.clientX + offset}px`;
-  tooltip.style.top = `${event.clientY + offset}px`;
-}
+  const offset = 12;
 
+  // Start by placing it just below/right of the cursor
+  let x = event.clientX + offset;
+  let y = event.clientY + offset;
+
+  const tooltipRect = tooltip.getBoundingClientRect();
+  const maxX = window.innerWidth - tooltipRect.width - offset;
+  const maxY = window.innerHeight - tooltipRect.height - offset;
+
+  // Clamp so it stays fully on–screen
+  x = Math.max(offset, Math.min(x, maxX));
+  y = Math.max(offset, Math.min(y, maxY));
+
+  tooltip.style.left = `${x}px`;
+  tooltip.style.top = `${y}px`;
+}
 // 5. Scatterplot of commit datetime vs time-of-day
 function renderScatterPlot(data, commits) {
   const width = 1000;
