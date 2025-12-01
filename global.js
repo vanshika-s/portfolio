@@ -72,6 +72,7 @@ export function renderProjects(projects, containerElement, headingLevel = "h2") 
     // Fall back values in case some fields are missing
     const title = project.title || "Untitled project";
     const description = project.description || "";
+    const year = project.year || "";          // NEW
     const rawImage = project.image || "";
 
     // Build a correct image URL
@@ -90,7 +91,10 @@ export function renderProjects(projects, containerElement, headingLevel = "h2") 
     article.innerHTML = `
       <${tag}>${title}</${tag}>
       ${imageSrc ? `<img src="${imageSrc}" alt="${title}">` : ""}
-      <p>${description}</p>
+      <div class="project-text">
+        <p>${description}</p>
+        ${year ? `<p class="project-year">${year}</p>` : ""}
+      </div>
     `;
 
     containerElement.appendChild(article);
