@@ -231,3 +231,49 @@ nav a:hover {
   border-radius: 0.25em;   /* or 50% if you want circles */
   background-color: var(--color);
 }
+
+/* Container for pie chart + legend */
+.pie-layout {
+  display: flex;
+  align-items: center;   /* vertical alignment */
+  gap: 2rem;             /* space between pie and legend */
+  margin-block: 2rem;
+}
+
+/* Keep the SVG from exploding in size */
+#projects-pie-plot {
+  max-width: 16rem;
+  flex-shrink: 0;        /* don’t let it get squished too much */
+}
+
+/* Legend takes the remaining width */
+.legend {
+  flex: 1;
+  list-style: none;
+  padding: 1rem;
+  margin: 0;
+  border: 1px solid oklch(80% 3% 200 / 40%);
+  border-radius: 0.5rem;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9em, 1fr));
+  gap: 0.75rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-item .swatch {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border-radius: 0.25em;
+  background-color: var(--color);
+}
+
+.pie-layout {
+  flex-wrap: wrap;
+}
