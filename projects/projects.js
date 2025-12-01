@@ -25,15 +25,14 @@ async function main() {
   // Save full list so search can reuse it
   allProjects = projects;
 
-  // 4. Update the title with the number of projects
-  const titleEl = document.querySelector(".projects-title");
-  if (titleEl) {
-    const count = projects.length;
-    titleEl.textContent = `Projects (${count})`;
-  }
-
-  // --- helper: render list + pie chart for a given set of projects ---
+  // ---- helper: render list + pie chart for a given set of projects ----
   function updateView(projectList) {
+    // 0) Update the title count
+    const titleEl = document.querySelector(".projects-title");
+    if (titleEl) {
+      titleEl.textContent = `Projects (${projectList.length})`;
+    }
+
     // 1) Render project cards
     renderProjects(projectList, projectsContainer, "h2");
 
@@ -56,11 +55,11 @@ async function main() {
     // Group by year and count
     const rolledData = d3.rollups(
       projectList,
-      (v) => v.length,   // number of projects in that year
-      (d) => d.year      // group key = project.year
+      (v) => v.length,      // number of projects in that year
+      (d) => d.year         // group key = project.year
     );
 
-    // sort years (optional but nice)
+    // Sort years (optional but nice)
     rolledData.sort((a, b) => Number(a[0]) - Number(b[0]));
 
     // Convert to { value, label } format for the chart
@@ -102,10 +101,10 @@ async function main() {
     });
   }
 
-  // 5. Initial render with ALL projects
+  // 4. Initial render with ALL projects
   updateView(allProjects);
 
-  // 6. Search input → filter + re-render
+  // 5. Search input → filter + re-render
   const searchInput = document.querySelector(".searchBar");
   if (searchInput) {
     searchInput.addEventListener("input", (event) => {
@@ -114,8 +113,8 @@ async function main() {
       const filtered = allProjects.filter((project) => {
         // grab ALL values of the project object
         const values = Object.values(project)
-          .join("\n")         // combine into one big string
-          .toLowerCase();     // make search case-insensitive
+          .join("\n")
+          .toLowerCase();
 
         return values.includes(query);
       });
