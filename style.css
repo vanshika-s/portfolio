@@ -277,3 +277,25 @@ nav a:hover {
 .pie-layout {
   flex-wrap: wrap;
 }
+
+/* Projects search bar */
+.searchBar {
+  display: block;
+  width: 100%;
+  max-width: 50rem;          /* how wide it can get */
+  margin: 2rem auto 0;       /* center it, add space above */
+  padding: 0.9rem 1.2rem;    /* nice chunky padding */
+  font-size: 1.05rem;
+  font-family: inherit;
+
+  border: 2px solid oklch(50% 0.05 250);  /* tweak if you want */
+  border-radius: 0.4rem;
+  box-sizing: border-box;
+
+  outline: none;
+}
+
+.searchBar:focus {
+  border-color: oklch(55% 0.12 250);
+  box-shadow: 0 0 0 2px oklch(85% 0.15 250 / 60%);
+}
