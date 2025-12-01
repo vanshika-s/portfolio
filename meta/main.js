@@ -102,23 +102,56 @@ function renderScatterPlot(data, commits) {
   const width = 1000;
   const height = 600;
 
+  // --- margins & usable area ---
+  const margin = { top: 10, right: 10, bottom: 30, left: 20 };
+
+  const usableArea = {
+    top: margin.top,
+    right: width - margin.right,
+    bottom: height - margin.bottom,
+    left: margin.left,
+    width: width - margin.left - margin.right,
+    height: height - margin.top - margin.bottom,
+  };
+
   const svg = d3
     .select("#chart")
     .append("svg")
     .attr("viewBox", `0 0 ${width} ${height}`)
     .style("overflow", "visible");
 
-  // X = date/time of commit
+  // --- scales ---
   const xScale = d3
     .scaleTime()
     .domain(d3.extent(commits, (d) => d.datetime))
-    .range([0, width])
+    .range([usableArea.left, usableArea.right])
     .nice();
 
-  // Y = hour of day 0–24, inverted (0 at top of SVG coords)
-  const yScale = d3.scaleLinear().domain([0, 24]).range([height, 0]);
+  const yScale = d3
+    .scaleLinear()
+    .domain([0, 24])
+    .range([usableArea.bottom, usableArea.top]);
 
-  // dots group
+  // --- axes ---
+  const xAxis = d3.axisBottom(xScale);
+
+  const yAxis = d3
+    .axisLeft(yScale)
+    .tickFormat((d) => String(d % 24).padStart(2, "0") + ":00");
+
+  // X axis at bottom of usable area
+  svg
+    .append("g")
+    .attr("transform", `translate(0, ${usableArea.bottom})`)
+    .call(xAxis);
+
+  // Y axis at left of usable area
+  svg
+    .append("g")
+    .attr("transform", `translate(${usableArea.left}, 0)`)
+    .call(yAxis);
+
+  // --- dots ---
   const dots = svg.append("g").attr("class", "dots");
 
   dots
