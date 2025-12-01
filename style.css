@@ -410,7 +410,8 @@ nav a:hover {
 
 /* Scatterplot gridlines */
 .gridlines line {
-  stroke-width: 1.5;
+  stroke-opacity: 0.4;
+  stroke-width: 1.2;
 }
 
 .gridlines path {
