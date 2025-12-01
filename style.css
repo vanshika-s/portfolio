@@ -526,3 +526,44 @@ circle:hover {
 circle.selected {
   fill: #ff6b6b;
 }
+
+#selection-count {
+  margin-top: 1.5rem;
+  font-size: 1.1rem;
+}
+
+/*  CSS   JS   HTML  blocks */
+#language-breakdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 1.5rem 3rem;
+  margin-top: 1rem;
+  text-align: center;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Mono",
+    ui-monospace, monospace;
+}
+
+#language-breakdown dt,
+#language-breakdown dd {
+  margin: 0;
+}
+
+#language-breakdown dt {
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+#language-breakdown dd .lines {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 500;
+}
+
+#language-breakdown dd .percent {
+  display: block;
+  font-size: 1.2rem;
+  margin-top: 0.25rem;
+}

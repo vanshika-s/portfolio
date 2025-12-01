@@ -168,11 +168,42 @@ function renderLanguageBreakdown(selection, commits, isCommitSelected) {
 
   const container = document.getElementById("language-breakdown");
 
-  // Clear if nothing is selected
+  // If nothing selected, clear and bail
   if (selectedCommits.length === 0) {
     container.innerHTML = "";
     return;
   }
+
+  // Use selected commits (or all if you ever want that behavior)
+  const requiredCommits = selectedCommits.length ? selectedCommits : commits;
+
+  // All line-level rows from those commits
+  const lines = requiredCommits.flatMap((d) => d.lines);
+
+  // Count lines per language (row.type is the language)
+  const breakdown = d3.rollup(
+    lines,
+    (v) => v.length,     // how many lines
+    (d) => d.type        // key = language/type
+  );
+
+  // Clear previous content
+  container.innerHTML = "";
+
+  // Build pretty blocks like: CSS / 82 lines / (23.6%)
+  for (const [language, count] of breakdown) {
+    const proportion = count / lines.length;
+    const formatted = d3.format(".1~%")(proportion);
+
+    container.innerHTML += `
+      <dt>${language}</dt>
+      <dd>
+        <span class="lines">${count} lines</span>
+        <span class="percent">(${formatted})</span>
+      </dd>
+    `;
+  }
+}
 
   const requiredCommits = selectedCommits.length ? selectedCommits : commits;
   const lines = requiredCommits.flatMap((d) => d.lines);
@@ -195,7 +226,6 @@ function renderLanguageBreakdown(selection, commits, isCommitSelected) {
       <dd>${count} lines (${formatted})</dd>
     `;
   }
-}
 
 // 5. Scatterplot of commit datetime vs time-of-day
 function renderScatterPlot(data, commits) {
