@@ -29,6 +29,21 @@ async function main() {
 
   const profileStats = document.querySelector('#profile-stats');
   console.log("Profile stats element:", profileStats);
+
+  // 6. Select the profile stats container
+  const profileStats = document.querySelector("#profile-stats");
+
+  // 7. If it exists, inject the stats HTML
+  if (profileStats && githubData) {
+    profileStats.innerHTML = `
+      <dl>
+        <dt>Public Repos:</dt><dd>${githubData.public_repos}</dd>
+        <dt>Public Gists:</dt><dd>${githubData.public_gists}</dd>
+        <dt>Followers:</dt><dd>${githubData.followers}</dd>
+        <dt>Following:</dt><dd>${githubData.following}</dd>
+      </dl>
+    `;
+  }
 }
 
 main();

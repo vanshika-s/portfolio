@@ -138,3 +138,17 @@ nav a:hover {
   right: 1rem;    /* distance from right */
   font-size: 80%; /* a bit smaller so it’s not too loud */
 }
+
+#profile-stats dl {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem 1rem;
+}
+
+#profile-stats dt {
+  font-weight: bold;
+}
+
+#profile-stats dd {
+  margin: 0;
+}
