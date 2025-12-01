@@ -305,6 +305,16 @@ nav a:hover {
   overflow: visible;
 }
 
+/* Smooth animation for wedges */
+#projects-pie-plot path {
+  transition: opacity 300ms;
+}
+
+/* When ANY wedge is hovered, fade the others */
+#projects-pie-plot:has(path:hover) path:not(:hover) {
+  opacity: 0.5;
+}
+
 /* Legend layout */
 .legend {
   list-style: none;
