@@ -97,7 +97,6 @@ function renderCommitInfo(data, commits) {
 
 // 4. Tooltip content
 function renderTooltipContent(commit) {
-  const tooltip = document.getElementById("commit-tooltip");
   const link = document.getElementById("commit-link");
   const date = document.getElementById("commit-date");
   const time = document.getElementById("commit-time");
@@ -105,11 +104,8 @@ function renderTooltipContent(commit) {
   const lines = document.getElementById("commit-lines");
 
   if (!commit || Object.keys(commit).length === 0) {
-    tooltip.style.opacity = 0;
     return;
   }
-
-  tooltip.style.opacity = 1;
 
   link.href = commit.url;
   link.textContent = commit.id.slice(0, 7); // short hash
@@ -125,6 +121,18 @@ function renderTooltipContent(commit) {
 
   author.textContent = commit.author;
   lines.textContent = commit.totalLines;
+}
+
+function updateTooltipVisibility(isVisible) {
+  const tooltip = document.getElementById("commit-tooltip");
+  tooltip.hidden = !isVisible;
+}
+
+function updateTooltipPosition(event) {
+  const tooltip = document.getElementById("commit-tooltip");
+  const offset = 12; // little nudge away from cursor
+  tooltip.style.left = `${event.clientX + offset}px`;
+  tooltip.style.top = `${event.clientY + offset}px`;
 }
 
 // 5. Scatterplot of commit datetime vs time-of-day
@@ -203,7 +211,7 @@ function renderScatterPlot(data, commits) {
 
   // --- dots ---
   const dots = svg.append("g").attr("class", "dots");
-
+  
   dots
     .selectAll("circle")
     .data(commits)
@@ -213,10 +221,15 @@ function renderScatterPlot(data, commits) {
     .attr("r", 5)
     .attr("fill", "steelblue")
     .on("mouseenter", (event, commit) => {
-      renderTooltipContent(commit);
+        renderTooltipContent(commit);
+        updateTooltipVisibility(true);
+        updateTooltipPosition(event);
+    })
+    .on("mousemove", (event) => {
+        updateTooltipPosition(event);
     })
     .on("mouseleave", () => {
-      renderTooltipContent(null); // hides tooltip
+        updateTooltipVisibility(false);
     });
 }
 

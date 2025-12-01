@@ -448,18 +448,56 @@ dl.info dd {
   font-weight: 500;
 }
 
-/* Tooltip positioning */
-.tooltip {
-  position: fixed;
-  top: 1rem;
-  left: 1rem;
-  max-width: 20rem;
-  pointer-events: none;  /* don’t block mouse events */
-  opacity: 0;
-  transition: opacity 150ms;
+/* Generic info dl layout */
+dl.info {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 0.75rem;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
 }
 
-/* Scatterplot dots hover */
+dl.info dt,
+dl.info dd {
+  margin: 0;
+}
+
+dl.info dt {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+dl.info dd {
+  font-weight: 500;
+}
+
+/* Tooltip behavior + look */
+.tooltip {
+  position: fixed;
+  top: 1em;
+  left: 1em;
+  background-color: rgba(255, 255, 255, 0.92);
+  color: inherit;
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(6px);
+  border: 1px solid oklch(90% 0.02 240 / 0.8);
+  pointer-events: none; /* let mouse events go “through” the tooltip */
+  transition-duration: 200ms;
+  transition-property: opacity, visibility, transform;
+}
+
+/* Smooth hide/show via [hidden] */
+dl.info[hidden]:not(:hover, :focus-within) {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+}
+
+/* Dot hover styling (if not already there) */
 circle {
   transition: 200ms;
   transform-origin: center;
