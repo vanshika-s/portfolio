@@ -148,13 +148,14 @@ function renderScatterPlot(data, commits) {
   // Optional: color lines by time of day (night vs day)
   gridlines.selectAll("line")
     .attr("stroke", (d) => {
-      const h = d % 24;
-      if (h < 6 || h >= 20) return "#1e3a8a";   // night
-      if (h < 12) return "#f97316";             // morning
-      if (h < 18) return "#0ea5e9";             // afternoon
-      return "#2563eb";                         // evening
-    })
-    .attr("stroke-opacity", 0.2);
+    const h = d % 24;
+    if (h < 6 || h >= 20) return "#1e3a8a";   // night
+    if (h < 12) return "#f97316";             // morning
+    if (h < 18) return "#0ea5e9";             // afternoon
+    return "#2563eb";                         // evening
+  })
+  .attr("stroke-opacity", 0.4)   // was 0.2
+  .attr("stroke-width", 1.2);    // slightly thicker
   
     // --- axes ---
   const xAxis = d3.axisBottom(xScale);
