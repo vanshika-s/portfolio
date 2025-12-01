@@ -258,7 +258,26 @@ function renderScatterPlot(data, commits) {
       d3.select(event.currentTarget).style("fill-opacity", 0.7);
       updateTooltipVisibility(false);
     });
+
+    // --- brushing -------------------------------------------------
+    function createBrushSelector(svg) {
+        // Limit brushing to the actual plotting area
+        const brush = d3.brush()
+            .extent([[usableArea.left, usableArea.top],
+                    [usableArea.right, usableArea.bottom]]);
+
+        // This adds the <g class="brush"> and its overlay rect
+        svg.call(brush);
+
+        // The overlay now sits on top of everything and steals mouse events.
+        // Put the dots (and anything after the overlay) back on top:
+        svg.selectAll(".dots, .overlay ~ *").raise();
+    }
+
+    // call it once the chart is drawn
+    createBrushSelector(svg);
 }
+
 
 // ---- main top-level flow ----
 const data = await loadData();
