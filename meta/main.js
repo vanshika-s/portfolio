@@ -260,24 +260,44 @@ function renderScatterPlot(data, commits) {
     });
 
     // --- brushing -------------------------------------------------
-    function createBrushSelector(svg) {
-        // Limit brushing to the actual plotting area
-        const brush = d3.brush()
-            .extent([[usableArea.left, usableArea.top],
-                    [usableArea.right, usableArea.bottom]]);
+  function createBrushSelector(svg, dotsGroup, xScale, yScale) {
+    const brush = d3.brush()
+      .extent([
+        [usableArea.left, usableArea.top],
+        [usableArea.right, usableArea.bottom],
+      ])
+      .on("start brush end", brushed);
 
-        // This adds the <g class="brush"> and its overlay rect
-        svg.call(brush);
-
-        // The overlay now sits on top of everything and steals mouse events.
-        // Put the dots (and anything after the overlay) back on top:
-        svg.selectAll(".dots, .overlay ~ *").raise();
+    function brushed(event) {
+      const selection = event.selection;
+      dotsGroup
+        .selectAll("circle")
+        .classed("selected", (d) => isCommitSelected(selection, d));
     }
 
-    // call it once the chart is drawn
-    createBrushSelector(svg);
-}
+    function isCommitSelected(selection, commit) {
+      if (!selection) return false;
 
+      // brush gives us [[x0, y0], [x1, y1]] in *pixel* coords
+      const [[x0, y0], [x1, y1]] = selection;
+
+      // compute this commit’s pixel position using the same scales
+      const cx = xScale(commit.datetime);
+      const cy = yScale(commit.hourFrac);
+
+      return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
+    }
+
+    // Add brush <g> and overlay
+    svg.call(brush);
+
+    // Raise dots and everything after overlay so tooltips still work
+    svg.selectAll(".dots, .overlay ~ *").raise();
+  }
+
+  // call it once the chart is drawn
+  createBrushSelector(svg, dots, xScale, yScale);
+}
 
 // ---- main top-level flow ----
 const data = await loadData();
