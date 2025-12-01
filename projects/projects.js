@@ -29,25 +29,32 @@ async function main() {
   // 5. Render the projects into the container
   renderProjects(projects, projectsContainer, "h2");
 
-  // ---------- D3 CIRCLE FOR PIE CHART SETUP (Step 1.3) ----------
-  // Select the SVG we added in projects/index.html
+  // ---------- D3 STATIC PIE CHART (Step 1.4) ----------
   const svg = d3.select("#projects-pie-plot");
 
   if (!svg.empty()) {
-    // Create an arc generator for a full circle of radius 50
+    // Arc generator for slices (radius 50)
     const arcGenerator = d3.arc()
       .innerRadius(0)
       .outerRadius(50);
 
-    const arc = arcGenerator({
-      startAngle: 0,
-      endAngle: 2 * Math.PI,   // full circle in radians
-    });
+    // Our dummy data: 1/3 vs 2/3 of the circle
+    const data = [1, 2];
 
-    // Append the path to the SVG
-    svg.append("path")
-      .attr("d", arc)
-      .attr("fill", "red");
+    // Let D3 compute startAngle / endAngle for each slice
+    const sliceGenerator = d3.pie();
+    const arcData = sliceGenerator(data);          // [{startAngle, endAngle, ...}, ...]
+    const arcs = arcData.map(d => arcGenerator(d)); // array of path strings
+
+    // Colors for the slices
+    const colors = ["gold", "purple"];
+
+    // Add one <path> per slice
+    arcs.forEach((arc, idx) => {
+      svg.append("path")
+        .attr("d", arc)
+        .attr("fill", colors[idx % colors.length]);
+    });
   }
 }
 
