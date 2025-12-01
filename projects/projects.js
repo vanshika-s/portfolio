@@ -29,23 +29,23 @@ async function main() {
   // 5. Render the projects into the container
   renderProjects(projects, projectsContainer, "h2");
 
-  // ---------- D3 STATIC PIE CHART (Step 1.4) ----------
+  // ---------- D3 STATIC PIE CHART + LEGEND ----------
   const svg = d3.select("#projects-pie-plot");
 
   if (!svg.empty()) {
     // Arc generator for slices (radius 50)
     const arcGenerator = d3.arc()
-        .innerRadius(0)
-        .outerRadius(50);
+      .innerRadius(0)
+      .outerRadius(50);
 
     // Step 2.1: data now has labels + values
     const data = [
-        { value: 1, label: "apples" },
-        { value: 2, label: "oranges" },
-        { value: 3, label: "mangos" },
-        { value: 4, label: "pears" },
-        { value: 5, label: "limes" },
-        { value: 5, label: "cherries" },
+      { value: 1, label: "apples" },
+      { value: 2, label: "oranges" },
+      { value: 3, label: "mangos" },
+      { value: 4, label: "pears" },
+      { value: 5, label: "limes" },
+      { value: 5, label: "cherries" },
     ];
 
     // Tell D3 which property holds the numeric value
@@ -58,23 +58,25 @@ async function main() {
 
     // Draw one <path> per slice
     arcs.forEach((arc, idx) => {
-        svg.append("path")
+      svg.append("path")
         .attr("d", arc)
         .attr("fill", colors(idx));
     });
-    
+
+    // Build the legend
     const legend = d3.select(".legend");
+
     data.forEach((d, idx) => {
-        legend
+      legend
         .append("li")
         .attr("style", `--color:${colors(idx)}`)
         .attr("class", "legend-item")
         .html(`
-            <span class="swatch"></span>
-            ${d.label} <em>(${d.value})</em>
+          <span class="swatch"></span>
+          ${d.label} <em>(${d.value})</em>
         `);
-
-    }
+    });
+  }
 }
 
 main();
