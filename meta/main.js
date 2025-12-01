@@ -147,6 +147,56 @@ function updateTooltipPosition(event) {
   tooltip.style.left = `${x}px`;
   tooltip.style.top = `${y}px`;
 }
+
+function renderSelectionCount(selection, commits, isCommitSelected) {
+  const selectedCommits = selection
+    ? commits.filter((d) => isCommitSelected(selection, d))
+    : [];
+
+  const countElement = document.querySelector("#selection-count");
+  countElement.textContent = `${
+    selectedCommits.length || "No"
+  } commits selected`;
+
+  return selectedCommits;
+}
+
+function renderLanguageBreakdown(selection, commits, isCommitSelected) {
+  const selectedCommits = selection
+    ? commits.filter((d) => isCommitSelected(selection, d))
+    : [];
+
+  const container = document.getElementById("language-breakdown");
+
+  // Clear if nothing is selected
+  if (selectedCommits.length === 0) {
+    container.innerHTML = "";
+    return;
+  }
+
+  const requiredCommits = selectedCommits.length ? selectedCommits : commits;
+  const lines = requiredCommits.flatMap((d) => d.lines);
+
+  // Count lines per language / type
+  const breakdown = d3.rollup(
+    lines,
+    (v) => v.length,
+    (d) => d.type
+  );
+
+  container.innerHTML = "";
+
+  for (const [language, count] of breakdown) {
+    const proportion = count / lines.length;
+    const formatted = d3.format(".1~%")(proportion);
+
+    container.innerHTML += `
+      <dt>${language}</dt>
+      <dd>${count} lines (${formatted})</dd>
+    `;
+  }
+}
+
 // 5. Scatterplot of commit datetime vs time-of-day
 function renderScatterPlot(data, commits) {
   const width = 1000;
@@ -260,7 +310,7 @@ function renderScatterPlot(data, commits) {
     });
 
     // --- brushing -------------------------------------------------
-  function createBrushSelector(svg, dotsGroup, xScale, yScale) {
+  function createBrushSelector(svg, dotsGroup, xScale, yScale, commits) {
     const brush = d3.brush()
       .extent([
         [usableArea.left, usableArea.top],
@@ -268,35 +318,37 @@ function renderScatterPlot(data, commits) {
       ])
       .on("start brush end", brushed);
 
-    function brushed(event) {
-      const selection = event.selection;
-      dotsGroup
-        .selectAll("circle")
-        .classed("selected", (d) => isCommitSelected(selection, d));
-    }
-
     function isCommitSelected(selection, commit) {
       if (!selection) return false;
 
-      // brush gives us [[x0, y0], [x1, y1]] in *pixel* coords
       const [[x0, y0], [x1, y1]] = selection;
-
-      // compute this commit’s pixel position using the same scales
       const cx = xScale(commit.datetime);
       const cy = yScale(commit.hourFrac);
 
       return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
     }
 
-    // Add brush <g> and overlay
+    function brushed(event) {
+      const selection = event.selection;
+
+      // highlight circles
+      dotsGroup
+        .selectAll("circle")
+        .classed("selected", (d) => isCommitSelected(selection, d));
+
+      // update text + language breakdown
+      renderSelectionCount(selection, commits, isCommitSelected);
+      renderLanguageBreakdown(selection, commits, isCommitSelected);
+    }
+
     svg.call(brush);
 
-    // Raise dots and everything after overlay so tooltips still work
+    // keep dots & later elements above the brush overlay
     svg.selectAll(".dots, .overlay ~ *").raise();
   }
 
-  // call it once the chart is drawn
-  createBrushSelector(svg, dots, xScale, yScale);
+  // call it after dots are drawn
+  createBrushSelector(svg, dots, xScale, yScale, commits);
 }
 
 // ---- main top-level flow ----
