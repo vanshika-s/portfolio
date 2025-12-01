@@ -86,6 +86,17 @@ nav a:hover {
   margin: 0;
 }
 
+.projects img {
+  width: 100%;          /* fill the card width */
+  max-height: 12rem;    /* cap height so it doesn’t get huge */
+  object-fit: cover;    /* crop nicely instead of squishing */
+  display: block;       /* remove weird inline spacing */
+}
+
+.projects article {
+  padding: 0.5rem;
+}
+
 /*CV*/
 .cv {
   display: grid;
