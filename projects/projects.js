@@ -18,7 +18,7 @@ async function main() {
     return;
   }
 
-  // 🔹 4. Update the title with the number of projects
+  // 4. Update the title with the number of projects
   const titleEl = document.querySelector(".projects-title");
   if (titleEl) {
     const count = projects.length;
