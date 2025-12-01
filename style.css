@@ -343,3 +343,24 @@ nav a:hover {
   background-color: var(--color);
   display: inline-block;
 }
+
+/* Make wedges clearly clickable */
+#projects-pie-plot path {
+  cursor: pointer;
+}
+
+/* Selected highlight color – overrides inline --color */
+.selected {
+  --color: oklch(60% 0.45 0) !important;  /* pick any bright color you like */
+}
+
+/* When the selected class is on a path, use the special color */
+.selected:is(path) {
+  fill: var(--color);
+}
+
+/* When the selected class is on a legend item, the swatch picks up --color
+   (you already use var(--color) for background, so this just makes it stand out more) */
+.legend-item.selected .swatch {
+  box-shadow: 0 0 0 2px canvas, 0 0 0 4px var(--color);
+}

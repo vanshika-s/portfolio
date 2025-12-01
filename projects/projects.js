@@ -3,6 +3,7 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 
 let allProjects = [];
 let query = "";
+let selectedIndex = -1; // -1 means "nothing selected"
 
 async function main() {
   // 1. Load project data from JSON
@@ -25,14 +26,15 @@ async function main() {
   // Save full list so search can reuse it
   allProjects = projects;
 
-  // ---- helper: render list + pie chart for a given set of projects ----
-  function updateView(projectList) {
-    // 0) Update the title count
-    const titleEl = document.querySelector(".projects-title");
-    if (titleEl) {
-      titleEl.textContent = `Projects (${projectList.length})`;
-    }
+  // 4. Update the title with the number of projects
+  const titleEl = document.querySelector(".projects-title");
+  if (titleEl) {
+    const count = projects.length;
+    titleEl.textContent = `Projects (${count})`;
+  }
 
+  // --- helper: render list + pie chart for a given set of projects ---
+  function updateView(projectList) {
     // 1) Render project cards
     renderProjects(projectList, projectsContainer, "h2");
 
@@ -55,11 +57,11 @@ async function main() {
     // Group by year and count
     const rolledData = d3.rollups(
       projectList,
-      (v) => v.length,      // number of projects in that year
-      (d) => d.year         // group key = project.year
+      (v) => v.length,   // number of projects in that year
+      (d) => d.year      // group key = project.year
     );
 
-    // Sort years (optional but nice)
+    // sort years (optional but nice)
     rolledData.sort((a, b) => Number(a[0]) - Number(b[0]));
 
     // Convert to { value, label } format for the chart
@@ -81,16 +83,35 @@ async function main() {
     // Color scale
     const colors = d3.scaleOrdinal(d3.schemeTableau10);
 
+    // ---- helper to sync classes on wedges + legend ----
+    function applySelectionClasses() {
+      // paths: add "selected" to the chosen wedge
+      svg.selectAll("path").attr("class", (_, idx) =>
+        idx === selectedIndex ? "selected" : null
+      );
+
+      // legend items: keep "legend-item", add "selected" when active
+      legend.selectAll("li").attr("class", (_, idx) =>
+        idx === selectedIndex ? "legend-item selected" : "legend-item"
+      );
+    }
+
     // Draw slices
     arcs.forEach((arc, idx) => {
       svg.append("path")
         .attr("d", arc)
-        .attr("fill", colors(idx));
+        .attr("fill", colors(idx))
+        .attr("style", `--color:${colors(idx)}`) // so .selected can override this
+        .on("click", () => {
+          // toggle selection: deselect if same, otherwise select new
+          selectedIndex = selectedIndex === idx ? -1 : idx;
+          applySelectionClasses();
+        });
     });
 
     // Build legend
     data.forEach((d, idx) => {
-      legend
+      const li = legend
         .append("li")
         .attr("style", `--color:${colors(idx)}`)
         .attr("class", "legend-item")
@@ -98,27 +119,37 @@ async function main() {
           <span class="swatch"></span>
           ${d.label} <em>(${d.value})</em>
         `);
+
+      // clicking legend item selects/deselects same as wedge
+      li.on("click", () => {
+        selectedIndex = selectedIndex === idx ? -1 : idx;
+        applySelectionClasses();
+      });
     });
+
+    // Make sure classes reflect current `selectedIndex` after rebuild
+    applySelectionClasses();
   }
 
-  // 4. Initial render with ALL projects
+  // 5. Initial render with ALL projects
   updateView(allProjects);
 
-  // 5. Search input → filter + re-render
+  // 6. Search input → filter + re-render
   const searchInput = document.querySelector(".searchBar");
   if (searchInput) {
+    // use "input" for live updates
     searchInput.addEventListener("input", (event) => {
       query = event.target.value.toLowerCase();
 
       const filtered = allProjects.filter((project) => {
-        // grab ALL values of the project object
         const values = Object.values(project)
           .join("\n")
           .toLowerCase();
-
         return values.includes(query);
       });
 
+      // clear selection when query changes
+      selectedIndex = -1;
       updateView(filtered);   // re-render list + pie chart
     });
   }
