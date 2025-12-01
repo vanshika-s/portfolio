@@ -139,16 +139,38 @@ nav a:hover {
   font-size: 80%; /* a bit smaller so it’s not too loud */
 }
 
+#profile-stats {
+  margin-top: 2.5rem;
+}
+
+/* Make the definition list a 4-column grid */
 #profile-stats dl {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0.5rem 1rem;
+  gap: 0.5rem 2rem;      /* row gap, column gap */
+  margin: 0;
+  padding: 0;
+  text-align: center;
 }
 
-#profile-stats dt {
-  font-weight: bold;
-}
-
+/* Remove default margins */
+#profile-stats dt,
 #profile-stats dd {
   margin: 0;
+}
+
+/* Labels: FOLLOWERS, FOLLOWING, etc. */
+#profile-stats dt {
+  grid-row: 1;                      /* all <dt> on first row */
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: oklch(60% 0.03 250);       /* subtle gray; tweak if you like */
+}
+
+/* Numbers: 15306, 30, etc. */
+#profile-stats dd {
+  grid-row: 2;                      /* all <dd> on second row */
+  font-size: 2.5rem;
+  font-weight: 500;
 }
