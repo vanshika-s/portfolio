@@ -53,24 +53,18 @@ function processCommits(data) {
 function renderCommitInfo(data, commits) {
   const container = d3.select("#stats");
 
-  // Heading like your GitHub section
   container.append("h2").text("Summary");
 
   const dl = container.append("dl").attr("class", "stats");
 
-  // --- helper to add one stat pair ---
   function addStat(label, value, isLOC = false) {
-    const dt = dl.append("dt").text(label.toUpperCase());
-    if (isLOC) {
-      // add the LOC abbreviation markup
+    const dt = dl.append("dt");
+    if (isLOC && label.toLowerCase().includes("loc")) {
       dt.html(
-        label
-          .toUpperCase()
-          .replace(
-            "TOTAL LOC",
-            'TOTAL <abbr title="Lines of code">LOC</abbr>'
-          )
+        'TOTAL <abbr title="Lines of code">LOC</abbr>'
       );
+    } else {
+      dt.text(label.toUpperCase());
     }
     dl.append("dd").text(value);
   }
@@ -103,12 +97,46 @@ function renderCommitInfo(data, commits) {
   addStat("Max lines", maxLinesInFile);
 }
 
+// 4. Scatterplot of commit datetime vs time-of-day
+function renderScatterPlot(data, commits) {
+  const width = 1000;
+  const height = 600;
+
+  const svg = d3
+    .select("#chart")
+    .append("svg")
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .style("overflow", "visible");
+
+  // X = date/time of commit
+  const xScale = d3
+    .scaleTime()
+    .domain(d3.extent(commits, (d) => d.datetime))
+    .range([0, width])
+    .nice();
+
+  // Y = hour of day 0–24, inverted (0 at top of SVG coords)
+  const yScale = d3.scaleLinear().domain([0, 24]).range([height, 0]);
+
+  // dots group
+  const dots = svg.append("g").attr("class", "dots");
+
+  dots
+    .selectAll("circle")
+    .data(commits)
+    .join("circle")
+    .attr("cx", (d) => xScale(d.datetime))
+    .attr("cy", (d) => yScale(d.hourFrac))
+    .attr("r", 5)
+    .attr("fill", "steelblue");
+}
+
 // ---- main top-level flow ----
 const data = await loadData();
 const commits = processCommits(data);
 
-// Optional sanity logs
 console.log("LOC rows:", data.length);
 console.log("Commit objects:", commits);
 
 renderCommitInfo(data, commits);
+renderScatterPlot(data, commits);
