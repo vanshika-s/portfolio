@@ -1,4 +1,4 @@
-import { fetchJSON, renderProjects } from "./global.js";
+import { fetchJSON, renderProjects, fetchGitHubData } from "./global.js";
 
 async function main() {
   // 1. Load all projects
@@ -16,12 +16,19 @@ async function main() {
   const projectsContainer = document.querySelector(".projects");
 
   if (!projectsContainer) {
-    console.error("No .projects container found on the home page.");
+    console.error("No element with class 'projects' found on the home page.");
     return;
   }
 
   // 4. Render the latest projects
   renderProjects(latestProjects, projectsContainer, "h2");
+
+  // 5. Fetch GitHub data for YOUR username
+  const githubData = await fetchGitHubData("vanshika-s");
+  console.log("GitHub data:", githubData);
+
+  const profileStats = document.querySelector('#profile-stats');
+  console.log("Profile stats element:", profileStats);
 }
 
 main();
