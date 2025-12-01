@@ -106,6 +106,7 @@ let pages = [
   { url: "projects/", title: "Projects" },
   { url: "contact/",  title: "Contact" },
   { url: "cv/",       title: "CV" },
+  { url: "meta/",     title: "Meta" },   // 👈 new page
   { url: "https://github.com/vanshika-s", title: "Profile" },
 ];
 
