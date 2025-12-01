@@ -182,6 +182,13 @@ function renderScatterPlot(data, commits) {
     .domain([0, 24])
     .range([usableArea.bottom, usableArea.top]);
 
+  // --- radius scale (lines edited -> dot size) ---
+  const [minLines, maxLines] = d3.extent(commits, (d) => d.totalLines);
+  const rScale = d3
+    .scaleSqrt()                         // area ∝ lines edited
+    .domain([minLines, maxLines])
+    .range([3, 20]);                     // tweak if you want bigger/smaller dots
+
   // --- gridlines (drawn before axes & dots) ---
   const gridlines = svg
     .append("g")
@@ -189,7 +196,9 @@ function renderScatterPlot(data, commits) {
     .attr("transform", `translate(${usableArea.left}, 0)`);
 
   gridlines.call(
-    d3.axisLeft(yScale).tickFormat("").tickSize(-usableArea.width)
+    d3.axisLeft(yScale)
+      .tickFormat("")
+      .tickSize(-usableArea.width)
   );
 
   gridlines
@@ -197,9 +206,9 @@ function renderScatterPlot(data, commits) {
     .attr("stroke", (d) => {
       const h = d % 24;
       if (h < 6 || h >= 20) return "#1e3a8a"; // night
-      if (h < 12) return "#f97316"; // morning
-      if (h < 18) return "#0ea5e9"; // afternoon
-      return "#2563eb"; // evening
+      if (h < 12) return "#f97316";           // morning
+      if (h < 18) return "#0ea5e9";           // afternoon
+      return "#2563eb";                       // evening
     })
     .attr("stroke-opacity", 0.4)
     .attr("stroke-width", 1.2);
@@ -221,27 +230,33 @@ function renderScatterPlot(data, commits) {
     .attr("transform", `translate(${usableArea.left}, 0)`)
     .call(yAxis);
 
-  // --- dots ---
+  // --- dots (sorted so small ones are on top) ---
+  const sortedCommits = d3.sort(commits, (d) => -d.totalLines);
+
   const dots = svg.append("g").attr("class", "dots");
-  
+
   dots
     .selectAll("circle")
-    .data(commits)
+    .data(sortedCommits)
     .join("circle")
     .attr("cx", (d) => xScale(d.datetime))
     .attr("cy", (d) => yScale(d.hourFrac))
-    .attr("r", 5)
+    .attr("r", (d) => rScale(d.totalLines))
     .attr("fill", "steelblue")
+    .style("fill-opacity", 0.7)
     .on("mouseenter", (event, commit) => {
-        renderTooltipContent(commit);
-        updateTooltipVisibility(true);
-        updateTooltipPosition(event);
+      d3.select(event.currentTarget).style("fill-opacity", 1);
+      renderTooltipContent(commit);
+      updateTooltipVisibility(true);
+      updateTooltipPosition(event);
     })
     .on("mousemove", (event) => {
-        updateTooltipPosition(event);
+      // keeps tooltip glued to the cursor while hovering
+      updateTooltipPosition(event);
     })
-    .on("mouseleave", () => {
-        updateTooltipVisibility(false);
+    .on("mouseleave", (event) => {
+      d3.select(event.currentTarget).style("fill-opacity", 0.7);
+      updateTooltipVisibility(false);
     });
 }
 
