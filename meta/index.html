@@ -8,42 +8,40 @@
   <body>
     <h1>Codebase Meta Analysis</h1>
 
+    <!-- Summary block -->
     <div id="stats"></div>
 
     <h2>Commits by time of day</h2>
     <div id="chart"></div>
 
+    <!-- Tooltip -->
     <dl id="commit-tooltip" class="info tooltip" hidden>
-        <dt>Commit</dt>
-        <dd>
-            <a href="" id="commit-link" target="_blank"></a>
-        </dd>
+      <dt>Commit</dt>
+      <dd><a href="" id="commit-link" target="_blank"></a></dd>
 
-        <dt>Date</dt>
-        <dd id="commit-date"></dd>
+      <dt>Date</dt>
+      <dd id="commit-date"></dd>
 
-        <dt>Time</dt>
-        <dd id="commit-time"></dd>
+      <dt>Time</dt>
+      <dd id="commit-time"></dd>
 
-        <dt>Author</dt>
-        <dd id="commit-author"></dd>
+      <dt>Author</dt>
+      <dd id="commit-author"></dd>
 
-        <dt>Lines edited</dt>
-        <dd id="commit-lines"></dd>
+      <dt>Lines edited</dt>
+      <dd id="commit-lines"></dd>
     </dl>
 
+    <!-- Brushing info -->
     <p id="selection-count">No commits selected</p>
 
+    <!-- Language breakdown -->
     <dl id="language-breakdown" class="stats"></dl>
 
-    <script type="module" src="./main.js"></script>
-
-    <div id="stats"></div>
-
-    <!-- Add this line so nav + theme are created -->
+    <!-- Site-wide nav/theme -->
     <script type="module" src="../global.js"></script>
 
-    <!-- Your meta-page JS -->
+    <!-- Meta-page logic -->
     <script type="module" src="./main.js"></script>
   </body>
 </html>
