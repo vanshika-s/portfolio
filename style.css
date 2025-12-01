@@ -412,7 +412,7 @@ nav a:hover {
 .gridlines line {
   stroke-width: 1.5;
   /* fallback if you don't use the JS color-by-time trick */
-  stroke: oklch(90% 0 0 / 0.6);
+  stroke: oklch(75.73% 0.00454 16.215 / 0.6);
 }
 
 .gridlines path {
