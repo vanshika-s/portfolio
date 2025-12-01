@@ -174,7 +174,7 @@ function renderLanguageBreakdown(selection, commits, isCommitSelected) {
     return;
   }
 
-  // Use selected commits (or all if you ever want that behavior)
+  // Use selected commits
   const requiredCommits = selectedCommits.length ? selectedCommits : commits;
 
   // All line-level rows from those commits
@@ -183,14 +183,14 @@ function renderLanguageBreakdown(selection, commits, isCommitSelected) {
   // Count lines per language (row.type is the language)
   const breakdown = d3.rollup(
     lines,
-    (v) => v.length,     // how many lines
-    (d) => d.type        // key = language/type
+    (v) => v.length, // number of lines
+    (d) => d.type    // language / type
   );
 
   // Clear previous content
   container.innerHTML = "";
 
-  // Build pretty blocks like: CSS / 82 lines / (23.6%)
+  // One block per language: LANGUAGE on top, lines + percent stacked below
   for (const [language, count] of breakdown) {
     const proportion = count / lines.length;
     const formatted = d3.format(".1~%")(proportion);
