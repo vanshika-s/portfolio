@@ -411,8 +411,6 @@ nav a:hover {
 /* Scatterplot gridlines */
 .gridlines line {
   stroke-width: 1.5;
-  /* fallback if you don't use the JS color-by-time trick */
-  stroke: oklch(75.73% 0.00454 16.215 / 0.6);
 }
 
 .gridlines path {
