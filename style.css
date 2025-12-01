@@ -417,3 +417,55 @@ nav a:hover {
 .gridlines path {
   display: none; /* hide the axis baseline */
 }
+
+/* Generic description list used for “info” blocks */
+dl.info {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.75rem;
+  row-gap: 0.25rem;
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  border-radius: 0.5rem;
+  background-color: oklch(98% 0 0 / 0.9);
+  box-shadow: 0 1px 4px oklch(0% 0 0 / 0.08);
+}
+
+dl.info dt,
+dl.info dd {
+  margin: 0;
+}
+
+dl.info dt {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: oklch(60% 0.03 250);
+}
+
+dl.info dd {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* Tooltip positioning */
+.tooltip {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  max-width: 20rem;
+  pointer-events: none;  /* don’t block mouse events */
+  opacity: 0;
+  transition: opacity 150ms;
+}
+
+/* Scatterplot dots hover */
+circle {
+  transition: 200ms;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+circle:hover {
+  transform: scale(1.5);
+}

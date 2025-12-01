@@ -60,9 +60,7 @@ function renderCommitInfo(data, commits) {
   function addStat(label, value, isLOC = false) {
     const dt = dl.append("dt");
     if (isLOC && label.toLowerCase().includes("loc")) {
-      dt.html(
-        'TOTAL <abbr title="Lines of code">LOC</abbr>'
-      );
+      dt.html('TOTAL <abbr title="Lines of code">LOC</abbr>');
     } else {
       dt.text(label.toUpperCase());
     }
@@ -97,7 +95,39 @@ function renderCommitInfo(data, commits) {
   addStat("Max lines", maxLinesInFile);
 }
 
-// 4. Scatterplot of commit datetime vs time-of-day
+// 4. Tooltip content
+function renderTooltipContent(commit) {
+  const tooltip = document.getElementById("commit-tooltip");
+  const link = document.getElementById("commit-link");
+  const date = document.getElementById("commit-date");
+  const time = document.getElementById("commit-time");
+  const author = document.getElementById("commit-author");
+  const lines = document.getElementById("commit-lines");
+
+  if (!commit || Object.keys(commit).length === 0) {
+    tooltip.style.opacity = 0;
+    return;
+  }
+
+  tooltip.style.opacity = 1;
+
+  link.href = commit.url;
+  link.textContent = commit.id.slice(0, 7); // short hash
+
+  date.textContent = commit.datetime?.toLocaleString("en", {
+    dateStyle: "full",
+  });
+
+  time.textContent = commit.datetime?.toLocaleTimeString("en", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  author.textContent = commit.author;
+  lines.textContent = commit.totalLines;
+}
+
+// 5. Scatterplot of commit datetime vs time-of-day
 function renderScatterPlot(data, commits) {
   const width = 1000;
   const height = 600;
@@ -132,45 +162,40 @@ function renderScatterPlot(data, commits) {
     .domain([0, 24])
     .range([usableArea.bottom, usableArea.top]);
 
-    // --- gridlines (drawn before axes & dots) ---
+  // --- gridlines (drawn before axes & dots) ---
   const gridlines = svg
     .append("g")
     .attr("class", "gridlines")
     .attr("transform", `translate(${usableArea.left}, 0)`);
 
-  // Axis with empty labels + full-width ticks
   gridlines.call(
-    d3.axisLeft(yScale)
-      .tickFormat("")                     // no text labels
-      .tickSize(-usableArea.width)        // ticks span full width
+    d3.axisLeft(yScale).tickFormat("").tickSize(-usableArea.width)
   );
 
-  // Optional: color lines by time of day (night vs day)
-  gridlines.selectAll("line")
+  gridlines
+    .selectAll("line")
     .attr("stroke", (d) => {
-    const h = d % 24;
-    if (h < 6 || h >= 20) return "#1e3a8a";   // night
-    if (h < 12) return "#f97316";             // morning
-    if (h < 18) return "#0ea5e9";             // afternoon
-    return "#2563eb";                         // evening
-  })
-  .attr("stroke-opacity", 0.4)   // was 0.2
-  .attr("stroke-width", 1.2);    // slightly thicker
-  
-    // --- axes ---
+      const h = d % 24;
+      if (h < 6 || h >= 20) return "#1e3a8a"; // night
+      if (h < 12) return "#f97316"; // morning
+      if (h < 18) return "#0ea5e9"; // afternoon
+      return "#2563eb"; // evening
+    })
+    .attr("stroke-opacity", 0.4)
+    .attr("stroke-width", 1.2);
+
+  // --- axes ---
   const xAxis = d3.axisBottom(xScale);
 
   const yAxis = d3
     .axisLeft(yScale)
     .tickFormat((d) => String(d % 24).padStart(2, "0") + ":00");
 
-  // X axis at bottom of usable area
   svg
     .append("g")
     .attr("transform", `translate(0, ${usableArea.bottom})`)
     .call(xAxis);
 
-  // Y axis at left of usable area
   svg
     .append("g")
     .attr("transform", `translate(${usableArea.left}, 0)`)
@@ -186,7 +211,13 @@ function renderScatterPlot(data, commits) {
     .attr("cx", (d) => xScale(d.datetime))
     .attr("cy", (d) => yScale(d.hourFrac))
     .attr("r", 5)
-    .attr("fill", "steelblue");
+    .attr("fill", "steelblue")
+    .on("mouseenter", (event, commit) => {
+      renderTooltipContent(commit);
+    })
+    .on("mouseleave", () => {
+      renderTooltipContent(null); // hides tooltip
+    });
 }
 
 // ---- main top-level flow ----
