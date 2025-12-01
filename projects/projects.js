@@ -13,12 +13,20 @@ async function main() {
   }
 
   // 3. If fetch failed, show a friendly message
-  if (!projects) {
+  if (!projects || !Array.isArray(projects)) {
     projectsContainer.textContent = "Unable to load projects right now.";
     return;
   }
 
-  // 4. Render the projects into the container
+  // 🔹 4. Update the title with the number of projects
+  const titleEl = document.querySelector(".projects-title");
+  if (titleEl) {
+    const count = projects.length;
+    titleEl.textContent = `Projects (${count})`;
+    // or: titleEl.textContent = `Projects – ${count} total`;
+  }
+
+  // 5. Render the projects into the container
   renderProjects(projects, projectsContainer, "h2");
 }
 
