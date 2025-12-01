@@ -25,8 +25,7 @@ function processCommits(data) {
 
       const ret = {
         id: commit,
-        // TODO: change this to YOUR repo URL if you want clickable links:
-        // e.g. 'https://github.com/vanshika-s/portfolio/commit/' + commit
+        // change to YOUR repo URL (already done here):
         url: "https://github.com/vanshika-s/portfolio/commit/" + commit,
         author,
         date,
@@ -42,18 +41,66 @@ function processCommits(data) {
       // Keep the raw lines, but hide them from normal console.log / loops
       Object.defineProperty(ret, "lines", {
         value: lines,
-        enumerable: false,   // don't show up in for...in / Object.keys / console
-        writable: false,     // we won't accidentally overwrite it
-        configurable: false, // can't be redefined
+        enumerable: false,   // don't show up in for...in / Object.keys
+        writable: false,
+        configurable: false,
       });
 
       return ret;
     });
 }
 
-// 3. Load everything and inspect in console for now
+// 3. Render high-level stats into #stats
+function renderCommitInfo(data, commits) {
+  const dl = d3.select("#stats").append("dl").attr("class", "stats");
+
+  // --- Required stats ---
+  dl.append("dt").html('Total <abbr title="Lines of code">LOC</abbr>');
+  dl.append("dd").text(data.length);
+
+  dl.append("dt").text("Total commits");
+  dl.append("dd").text(commits.length);
+
+  // --- Extra stats ---
+
+  // 1) Number of files
+  const numFiles = d3.group(data, (d) => d.file).size;
+  dl.append("dt").text("Files in project");
+  dl.append("dd").text(numFiles);
+
+  // 2) Longest file (by line count)
+  const fileLengths = d3.rollups(
+    data,
+    (v) => d3.max(v, (d) => d.line),
+    (d) => d.file
+  );
+  const longestFile = d3.greatest(fileLengths, (d) => d[1]);
+  dl.append("dt").text("Longest file");
+  dl.append("dd").text(`${longestFile[0]} (${longestFile[1]} lines)`);
+
+  // 3) Average line length (characters)
+  const avgLineLength = d3.mean(data, (d) => d.length);
+  dl.append("dt").text("Average line length");
+  dl.append("dd").text(avgLineLength.toFixed(1) + " chars");
+
+  // 4) Time of day with most work
+  const workByPeriod = d3.rollups(
+    data,
+    (v) => v.length,
+    (d) =>
+      new Date(d.datetime).toLocaleString("en", { dayPeriod: "short" }) // e.g. "morning"
+  );
+  const busiestPeriod = d3.greatest(workByPeriod, (d) => d[1])?.[0];
+  dl.append("dt").text("Most active time of day");
+  dl.append("dd").text(busiestPeriod ?? "–");
+}
+
+// 4. Load everything, process, and render
 const data = await loadData();
 const commits = processCommits(data);
 
+// Optional console sanity checks
 console.log("LOC rows:", data.length);
 console.log("Commit objects:", commits);
+
+renderCommitInfo(data, commits);

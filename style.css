@@ -364,3 +364,18 @@ nav a:hover {
 .legend-item.selected .swatch {
   box-shadow: 0 0 0 2px canvas, 0 0 0 4px var(--color);
 }
+
+.stats {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  gap: 0.5rem 2rem;
+}
+
+.stats dt {
+  font-weight: bold;
+}
+
+.stats dd {
+  margin: 0;
+}
