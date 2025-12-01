@@ -132,7 +132,31 @@ function renderScatterPlot(data, commits) {
     .domain([0, 24])
     .range([usableArea.bottom, usableArea.top]);
 
-  // --- axes ---
+    // --- gridlines (drawn before axes & dots) ---
+  const gridlines = svg
+    .append("g")
+    .attr("class", "gridlines")
+    .attr("transform", `translate(${usableArea.left}, 0)`);
+
+  // Axis with empty labels + full-width ticks
+  gridlines.call(
+    d3.axisLeft(yScale)
+      .tickFormat("")                     // no text labels
+      .tickSize(-usableArea.width)        // ticks span full width
+  );
+
+  // Optional: color lines by time of day (night vs day)
+  gridlines.selectAll("line")
+    .attr("stroke", (d) => {
+      const h = d % 24;
+      if (h < 6 || h >= 20) return "#1e3a8a";   // night
+      if (h < 12) return "#f97316";             // morning
+      if (h < 18) return "#0ea5e9";             // afternoon
+      return "#2563eb";                         // evening
+    })
+    .attr("stroke-opacity", 0.2);
+  
+    // --- axes ---
   const xAxis = d3.axisBottom(xScale);
 
   const yAxis = d3

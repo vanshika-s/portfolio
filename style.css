@@ -407,3 +407,14 @@ nav a:hover {
   font-size: 1.8rem;
   margin-bottom: 0.75rem;
 }
+
+/* Scatterplot gridlines */
+.gridlines line {
+  stroke-width: 1;
+  /* fallback if you don't use the JS color-by-time trick */
+  stroke: oklch(90% 0 0 / 0.6);
+}
+
+.gridlines path {
+  display: none; /* hide the axis baseline */
+}
