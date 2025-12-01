@@ -15,6 +15,76 @@ currentLink?.classList.add("current");
 
 console.log("Current link:", currentLink); */
 
+export async function fetchJSON(url) {
+  try {
+    // 1. Fetch the JSON file from the given URL
+    const response = await fetch(url);
+    console.log(response); // temporary: lets you inspect it in DevTools
+
+    // 2. Make sure the response is OK (status 200–299)
+    if (!response.ok) {
+      throw new Error(`Failed to fetch projects: ${response.status} ${response.statusText}`);
+    }
+
+    // 3. Parse the JSON body
+    const data = await response.json();
+
+    // 4. Return the parsed data so other code can use it
+    return data;
+  } catch (error) {
+    console.error("Error fetching or parsing JSON data:", error);
+    // optional: return null or [] so callers don't explode
+    return null;
+  }
+}
+
+export function renderProjects(projects, containerElement, headingLevel = "h2") {
+  // 1. Basic safety checks
+  if (!containerElement) {
+    console.error("renderProjects: containerElement is null/undefined.");
+    return;
+  }
+
+  if (!Array.isArray(projects)) {
+    console.error("renderProjects: projects is not an array:", projects);
+    return;
+  }
+
+  // 2. Clear existing content so we don't duplicate
+  containerElement.innerHTML = "";
+
+  // 3. Pick a safe heading level (fallback to h2 if invalid)
+  const validHeadings = ["h1", "h2", "h3", "h4", "h5", "h6"];
+  const tag = validHeadings.includes(headingLevel) ? headingLevel : "h2";
+
+  // 4. Handle empty project list nicely
+  if (projects.length === 0) {
+    const msg = document.createElement("p");
+    msg.textContent = "No projects to show yet. Check back soon!";
+    containerElement.appendChild(msg);
+    return;
+  }
+
+  // 5. Create an <article> for each project
+  for (let project of projects) {
+    const article = document.createElement("article");
+
+    // Fall back values in case some fields are missing
+    const title = project.title || "Untitled project";
+    const description = project.description || "";
+    const image = project.image || "";
+
+    // Use innerHTML so we can dynamically set the heading tag
+    article.innerHTML = `
+      <${tag}>${title}</${tag}>
+      ${image ? `<img src="${image}" alt="${title}">` : ""}
+      <p>${description}</p>
+    `;
+
+    containerElement.appendChild(article);
+  }
+}
+
 let pages = [
   { url: "",          title: "Home" },
   { url: "projects/", title: "Projects" },
