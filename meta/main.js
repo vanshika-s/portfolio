@@ -25,7 +25,6 @@ function processCommits(data) {
 
       const ret = {
         id: commit,
-        // change to YOUR repo URL (already done here):
         url: "https://github.com/vanshika-s/portfolio/commit/" + commit,
         author,
         date,
@@ -41,7 +40,7 @@ function processCommits(data) {
       // Keep the raw lines, but hide them from normal console.log / loops
       Object.defineProperty(ret, "lines", {
         value: lines,
-        enumerable: false,   // don't show up in for...in / Object.keys
+        enumerable: false,
         writable: false,
         configurable: false,
       });
@@ -50,56 +49,65 @@ function processCommits(data) {
     });
 }
 
-// 3. Render high-level stats into #stats
+// 3. Render the “GitHub-stats–style” summary block
 function renderCommitInfo(data, commits) {
-  const dl = d3.select("#stats").append("dl").attr("class", "stats");
+  const container = d3.select("#stats");
 
-  // --- Required stats ---
-  dl.append("dt").html('Total <abbr title="Lines of code">LOC</abbr>');
-  dl.append("dd").text(data.length);
+  // Heading like your GitHub section
+  container.append("h2").text("Summary");
 
-  dl.append("dt").text("Total commits");
-  dl.append("dd").text(commits.length);
+  const dl = container.append("dl").attr("class", "stats");
 
-  // --- Extra stats ---
+  // --- helper to add one stat pair ---
+  function addStat(label, value, isLOC = false) {
+    const dt = dl.append("dt").text(label.toUpperCase());
+    if (isLOC) {
+      // add the LOC abbreviation markup
+      dt.html(
+        label
+          .toUpperCase()
+          .replace(
+            "TOTAL LOC",
+            'TOTAL <abbr title="Lines of code">LOC</abbr>'
+          )
+      );
+    }
+    dl.append("dd").text(value);
+  }
 
-  // 1) Number of files
-  const numFiles = d3.group(data, (d) => d.file).size;
-  dl.append("dt").text("Files in project");
-  dl.append("dd").text(numFiles);
+  // Total LOC = one row per line
+  addStat("Total LOC", data.length, true);
 
-  // 2) Longest file (by line count)
+  // Total commits
+  addStat("Commits", commits.length);
+
+  // Number of files
+  const fileCount = d3.group(data, (d) => d.file).size;
+  addStat("Files", fileCount);
+
+  // Max depth
+  const maxDepth = d3.max(data, (d) => d.depth);
+  addStat("Max depth", maxDepth);
+
+  // Longest line length in characters
+  const longestLineLen = d3.max(data, (d) => d.length);
+  addStat("Longest line", longestLineLen);
+
+  // Max lines in a single file
   const fileLengths = d3.rollups(
     data,
     (v) => d3.max(v, (d) => d.line),
     (d) => d.file
   );
-  const longestFile = d3.greatest(fileLengths, (d) => d[1]);
-  dl.append("dt").text("Longest file");
-  dl.append("dd").text(`${longestFile[0]} (${longestFile[1]} lines)`);
-
-  // 3) Average line length (characters)
-  const avgLineLength = d3.mean(data, (d) => d.length);
-  dl.append("dt").text("Average line length");
-  dl.append("dd").text(avgLineLength.toFixed(1) + " chars");
-
-  // 4) Time of day with most work
-  const workByPeriod = d3.rollups(
-    data,
-    (v) => v.length,
-    (d) =>
-      new Date(d.datetime).toLocaleString("en", { dayPeriod: "short" }) // e.g. "morning"
-  );
-  const busiestPeriod = d3.greatest(workByPeriod, (d) => d[1])?.[0];
-  dl.append("dt").text("Most active time of day");
-  dl.append("dd").text(busiestPeriod ?? "–");
+  const maxLinesInFile = d3.max(fileLengths, (d) => d[1]);
+  addStat("Max lines", maxLinesInFile);
 }
 
-// 4. Load everything, process, and render
+// ---- main top-level flow ----
 const data = await loadData();
 const commits = processCommits(data);
 
-// Optional console sanity checks
+// Optional sanity logs
 console.log("LOC rows:", data.length);
 console.log("Commit objects:", commits);
 

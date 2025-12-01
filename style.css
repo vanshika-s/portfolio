@@ -365,17 +365,45 @@ nav a:hover {
   box-shadow: 0 0 0 2px canvas, 0 0 0 4px var(--color);
 }
 
-.stats {
-  margin-top: 2rem;
+
+/* ---------- Meta summary stats (GitHub-style) ---------- */
+
+#stats {
+  margin-top: 2.5rem;
+}
+
+/* Layout like the GitHub stats grid */
+#stats .stats {
   display: grid;
-  grid-template-columns: repeat(2, max-content);
+  grid-template-columns: repeat(5, 1fr);
   gap: 0.5rem 2rem;
-}
-
-.stats dt {
-  font-weight: bold;
-}
-
-.stats dd {
   margin: 0;
+  padding: 1.5rem 2rem;
+  border-radius: 0.5rem;
+  border: 1px solid oklch(90% 0.02 240);
+  background-color: color-mix(in oklch, canvas, oklch(90% 0.02 240) 8%);
+}
+
+/* Label row (COMMITS, FILES, etc.) */
+#stats .stats dt {
+  grid-row: 1;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: oklch(60% 0.03 250);
+  margin: 0;
+}
+
+/* Value row (numbers) */
+#stats .stats dd {
+  grid-row: 2;
+  font-size: 2.4rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Optional: heading above the block */
+#stats > h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.75rem;
 }
