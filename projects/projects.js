@@ -33,27 +33,34 @@ async function main() {
   const svg = d3.select("#projects-pie-plot");
 
   if (!svg.empty()) {
-  // Arc generator for slices (radius 50)
+    // Arc generator for slices (radius 50)
     const arcGenerator = d3.arc()
         .innerRadius(0)
         .outerRadius(50);
 
-    // Step 1.5: more data values
-    const data = [1, 2, 3, 4, 5, 5];
+    // Step 2.1: data now has labels + values
+    const data = [
+        { value: 1, label: "apples" },
+        { value: 2, label: "oranges" },
+        { value: 3, label: "mangos" },
+        { value: 4, label: "pears" },
+        { value: 5, label: "limes" },
+        { value: 5, label: "cherries" },
+    ];
 
-    // Let D3 compute startAngle / endAngle for each slice
-    const sliceGenerator = d3.pie();
+    // Tell D3 which property holds the numeric value
+    const sliceGenerator = d3.pie().value(d => d.value);
     const arcData = sliceGenerator(data);
     const arcs = arcData.map(d => arcGenerator(d));
 
-    // Use a D3 ordinal color scale instead of a fixed array
+    // Use a D3 ordinal color scale
     const colors = d3.scaleOrdinal(d3.schemeTableau10);
 
     // Draw one <path> per slice
     arcs.forEach((arc, idx) => {
         svg.append("path")
         .attr("d", arc)
-        .attr("fill", colors(idx));   // colors is now a *function*
+        .attr("fill", colors(idx));
     });
     }
 }
