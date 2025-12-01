@@ -111,15 +111,19 @@ async function main() {
     searchInput.addEventListener("input", (event) => {
       query = event.target.value.toLowerCase();
 
-      const filtered = allProjects.filter((project) =>
-        project.title.toLowerCase().includes(query) ||
-        (project.description &&
-          project.description.toLowerCase().includes(query))
-      );
+      const filtered = allProjects.filter((project) => {
+        // grab ALL values of the project object
+        const values = Object.values(project)
+          .join("\n")         // combine into one big string
+          .toLowerCase();     // make search case-insensitive
 
-      updateView(filtered);
+        return values.includes(query);
+      });
+
+      updateView(filtered);   // re-render list + pie chart
     });
   }
 }
 
 main();
+
