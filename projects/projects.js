@@ -1,6 +1,9 @@
 import { fetchJSON, renderProjects } from "../global.js";
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 
+let allProjects = [];
+let query = "";
+
 async function main() {
   // 1. Load project data from JSON
   const projects = await fetchJSON("../lib/projects.json");
@@ -19,6 +22,9 @@ async function main() {
     return;
   }
 
+  // Save full list so search can reuse it
+  allProjects = projects;
+
   // 4. Update the title with the number of projects
   const titleEl = document.querySelector(".projects-title");
   if (titleEl) {
@@ -26,51 +32,64 @@ async function main() {
     titleEl.textContent = `Projects (${count})`;
   }
 
-  // 5. Render the projects into the container
-  renderProjects(projects, projectsContainer, "h2");
+  // --- helper: render list + pie chart for a given set of projects ---
+  function updateView(projectList) {
+    // 1) Render project cards
+    renderProjects(projectList, projectsContainer, "h2");
 
-  // ---------- D3 PIE CHART + LEGEND USING REAL PROJECT YEARS ----------
-  const svg = d3.select("#projects-pie-plot");
+    // 2) Rebuild pie chart + legend based on *visible* projects
+    const svg = d3.select("#projects-pie-plot");
+    const legend = d3.select(".legend");
 
-  if (!svg.empty()) {
-    // 1. Group projects by year and count them
+    if (svg.empty()) return;
+
+    // Clear previous chart + legend so we don't stack them
+    svg.selectAll("*").remove();
+    legend.selectAll("*").remove();
+
+    // If nothing matches the filter, show a message + bail out
+    if (!projectList || projectList.length === 0) {
+      legend.append("li").text("No projects match this search yet.");
+      return;
+    }
+
+    // Group by year and count
     const rolledData = d3.rollups(
-      projects,
-      (v) => v.length,   // how many projects in that year
+      projectList,
+      (v) => v.length,   // number of projects in that year
       (d) => d.year      // group key = project.year
     );
 
-    // Optional: sort years numerically so legend is in order
+    // sort years (optional but nice)
     rolledData.sort((a, b) => Number(a[0]) - Number(b[0]));
 
-    // 2. Convert to { value, label } for the chart
+    // Convert to { value, label } format for the chart
     const data = rolledData.map(([year, count]) => ({
       value: count,
       label: year,
     }));
 
-    // 3. Arc generator for slices (radius 50)
+    // Arc generator
     const arcGenerator = d3.arc()
       .innerRadius(0)
       .outerRadius(50);
 
-    // 4. Use d3.pie to compute angles based on value
+    // Pie layout (based on value)
     const sliceGenerator = d3.pie().value((d) => d.value);
     const arcData = sliceGenerator(data);
     const arcs = arcData.map((d) => arcGenerator(d));
 
-    // 5. Color scale
+    // Color scale
     const colors = d3.scaleOrdinal(d3.schemeTableau10);
 
-    // 6. Draw one <path> per slice
+    // Draw slices
     arcs.forEach((arc, idx) => {
       svg.append("path")
         .attr("d", arc)
         .attr("fill", colors(idx));
     });
 
-    // 7. Build the legend under / next to the pie
-    const legend = d3.select(".legend");
+    // Build legend
     data.forEach((d, idx) => {
       legend
         .append("li")
@@ -80,6 +99,25 @@ async function main() {
           <span class="swatch"></span>
           ${d.label} <em>(${d.value})</em>
         `);
+    });
+  }
+
+  // 5. Initial render with ALL projects
+  updateView(allProjects);
+
+  // 6. Search input → filter + re-render
+  const searchInput = document.querySelector(".searchBar");
+  if (searchInput) {
+    searchInput.addEventListener("input", (event) => {
+      query = event.target.value.toLowerCase();
+
+      const filtered = allProjects.filter((project) =>
+        project.title.toLowerCase().includes(query) ||
+        (project.description &&
+          project.description.toLowerCase().includes(query))
+      );
+
+      updateView(filtered);
     });
   }
 }
