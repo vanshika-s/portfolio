@@ -781,3 +781,34 @@ circle:hover {
   fill: transparent;
   cursor: crosshair;
 }
+
+/* ---------- Scrollytelling layout (Meta) ---------- */
+
+#scrolly-1 {
+  position: relative;
+  display: flex;
+  gap: 1rem;
+
+  > * {
+    flex: 1;
+  }
+}
+
+#scatter-story {
+  position: relative;
+  max-width: 32rem;   /* keep text readable */
+}
+
+/* sticky chart on the right */
+#scatter-plot {
+  position: sticky;
+  top: 0;
+  left: 0;
+  bottom: auto;
+  height: 50vh;       /* IMPORTANT for sticky to work */
+}
+
+/* individual narrative steps */
+#scatter-story .step {
+  padding-bottom: 60vh;   /* space so each step “holds” the chart */
+}

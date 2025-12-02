@@ -26,20 +26,28 @@
 
       <h2>Meta</h2>
 
-      <!-- files list (Step 2) -->
-      <dl id="files"></dl>
-
       <!-- summary stats -->
       <section id="stats"></section>
 
-      <!-- scatterplot + brushing -->
-      <section class="chart-section">
-        <h2>Commits by time of day</h2>
-        <div id="chart"></div>
+      <!-- Scrollytelling container -->
+      <div id="scrolly-1">
+        <!-- Left column: story text -->
+        <div id="scatter-story"></div>
 
-        <p id="selection-count">No commits selected</p>
-        <dl id="language-breakdown"></dl>
-      </section>
+        <!-- Right column: sticky chart -->
+        <div id="scatter-plot">
+          <section class="chart-section">
+            <h2>Commits by time of day</h2>
+            <div id="chart"></div>
+
+            <p id="selection-count">No commits selected</p>
+            <dl id="language-breakdown"></dl>
+          </section>
+        </div>
+      </div>
+
+      <!-- files list (unit viz) now lives AFTER the scrolly -->
+      <dl id="files"></dl>
 
       <!-- tooltip -->
       <dl id="commit-tooltip" class="info tooltip" hidden>

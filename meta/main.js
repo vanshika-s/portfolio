@@ -1,5 +1,6 @@
 // meta/main.js
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
+import scrollama from "https://cdn.jsdelivr.net/npm/scrollama@3.2.0/+esm";
 
 // color scale for line "type" (css / js / html / etc.)
 const lineColor = d3.scaleOrdinal(d3.schemeTableau10);
@@ -31,7 +32,7 @@ let yScale;
 
 // ---------- 2. Turn line-level data into commit-level objects ----------
 function processCommits(data) {
-  return d3
+  const commits = d3
     .groups(data, (d) => d.commit) // [[commitId, lines[]], ...]
     .map(([commit, lines]) => {
       const first = lines[0];
@@ -61,6 +62,9 @@ function processCommits(data) {
 
       return ret;
     });
+
+  // sort by datetime so scrollytelling follows time order
+  return commits.sort((a, b) => d3.ascending(a.datetime, b.datetime));
 }
 
 // ---------- 3. Summary block (GitHub-style) ----------
@@ -538,10 +542,73 @@ function makeSliderHandler(data, commits) {
   };
 }
 
+// ---------- 11. Scrollama: sync scroll steps with the viz ----------
+function onStepEnter(response) {
+  const commit = response.element.__data__;
+  if (!commit) return;
+
+  const stepTime = commit.datetime;
+
+  // 1) Update global slider state + UI to match the step
+  commitProgress = timeScale(stepTime); // maps Date -> 0–100
+  const sliderEl = document.getElementById("commit-progress");
+  const timeEl = document.getElementById("commit-max-time");
+
+  if (sliderEl) {
+    sliderEl.value = String(commitProgress);
+  }
+  if (timeEl) {
+    timeEl.textContent = stepTime.toLocaleString("en", {
+      dateStyle: "long",
+      timeStyle: "short",
+    });
+  }
+
+  // 2) Filter commits up to this commit's time
+  filteredCommits = commits.filter((d) => d.datetime <= stepTime);
+  const filteredData = filteredCommits.flatMap((d) => d.lines);
+
+  // 3) Reuse the same update functions as the slider
+  updateScatterPlot(filteredData, filteredCommits);
+  updateFileDisplay(filteredCommits);
+  renderCommitInfo(filteredData, filteredCommits);
+}
 
 // ---------- 9. Top-level flow ----------
 const data = await loadData();
 const commits = processCommits(data);
+
+// ---------- 10. Scrollytelling text for each commit ----------
+d3.select("#scatter-story")
+  .selectAll(".step")
+  .data(commits)
+  .join("div")
+  .attr("class", "step")
+  .html((d, i) => {
+    const when = d.datetime.toLocaleString("en", {
+      dateStyle: "full",
+      timeStyle: "short",
+    });
+
+    const filesTouched = d3.rollups(
+      d.lines,
+      (D) => D.length,
+      (row) => row.file
+    ).length;
+
+    const linkText =
+      i > 0
+        ? "another glorious commit"
+        : "my first commit, and it was glorious";
+
+    return `
+      On ${when},
+      I made <a href="${d.url}" target="_blank" rel="noreferrer">${linkText}</a>.
+      I edited ${d.totalLines} lines across ${filesTouched} files.
+      Then I looked over all I had made, and I saw that it was very good.
+    `;
+  });
+
 
 console.log("LOC rows:", data.length);
 console.log("Commit objects:", commits);
@@ -570,3 +637,12 @@ if (sliderEl) {
   sliderEl.addEventListener("input", sliderHandler);
   sliderHandler(); // initialize UI + filtered views
 }
+
+// Initialize Scrollama
+const scroller = scrollama();
+scroller
+  .setup({
+    container: "#scrolly-1",
+    step: "#scrolly-1 .step",
+  })
+  .onStepEnter(onStepEnter);
