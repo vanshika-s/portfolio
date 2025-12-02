@@ -8,6 +8,23 @@
   <body>
     <h1>Codebase Meta Analysis</h1>
 
+
+    <header class="meta-header">
+        <h1>Meta</h1>
+
+        <label class="commit-filter">
+            Show commits until:
+            <input
+                id="commit-progress"
+                type="range"
+                min="0"
+                max="100"
+                value="100"
+            />
+            <time id="commit-time"></time>
+        </label>
+    </header>
+    
     <!-- Summary block -->
     <div id="stats"></div>
 
