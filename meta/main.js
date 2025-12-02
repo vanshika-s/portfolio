@@ -1,8 +1,8 @@
 // meta/main.js
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 
-// colors for technologies / line types
-const techColor = d3.scaleOrdinal(d3.schemeTableau10);
+// color scale for line "type" (css / js / html / etc.)
+const lineColor = d3.scaleOrdinal(d3.schemeTableau10);
 
 // ---------- 1. Load + clean CSV (one row per line of code) ----------
 async function loadData() {
@@ -226,22 +226,19 @@ function renderLanguageBreakdown(selection, commits, isCommitSelected) {
 function updateFileDisplay(commitsForFiles) {
   const container = d3.select("#files");
 
-  // If no commits in range, clear and bail
   if (!commitsForFiles.length) {
     container.selectAll("*").remove();
     return;
   }
 
-  // All line-level rows from the commits in range
   const lines = commitsForFiles.flatMap((d) => d.lines);
 
-  // Group by file, then SORT by number of lines (descending)
+  // group by file and sort by number of lines (descending)
   const files = d3
     .groups(lines, (d) => d.file)
     .map(([name, lines]) => ({ name, lines }))
-    .sort((a, b) => b.lines.length - a.lines.length);   // 2.3
+    .sort((a, b) => b.lines.length - a.lines.length); // <-- Step 2.3
 
-  // One <div> wrapper per file
   const filesContainer = container
     .selectAll("div")
     .data(files, (d) => d.name)
@@ -252,24 +249,20 @@ function updateFileDisplay(commitsForFiles) {
       })
     );
 
-  // dt: filename + tiny "N lines" underneath
+  // filename + "N lines"
   filesContainer
     .select("dt")
-    .html((d) => {
-      return `<code>${d.name}</code><small>${d.lines.length} lines</small>`;
-    });
+    .html((d) => `<code>${d.name}</code><small>${d.lines.length} lines</small>`);
 
-  // dd: unit visualization — one .loc div per *line*
-  const dd = filesContainer.select("dd");
-
-  dd.selectAll("div")
+  // one .loc per *line*, colored by that line's type
+  filesContainer
+    .select("dd")
+    .selectAll("div")
     .data((d) => d.lines)
     .join("div")
     .attr("class", "loc")
-    // 2.4 – color by technology / type
-    .attr("style", (line) => `--color: ${techColor(line.type)}`);
+    .style("--color", (line) => lineColor(line.type)); // <-- Step 2.4
 }
-
 
 // ---------- 7. Brush selector (rectangle + selection) ----------
 function createBrushSelector(svg, dotsGroup, xScale, yScale, commits) {
