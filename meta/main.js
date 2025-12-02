@@ -527,14 +527,17 @@ function makeSliderHandler(data, commits) {
       });
     }
 
+    // recompute filtered commits + line rows
     filteredCommits = commits.filter((d) => d.datetime <= commitMaxTime);
     const filteredData = filteredCommits.flatMap((d) => d.lines);
 
-    updateScatterPlot(data, filteredCommits);
+    // update everything based on filtered data
+    updateScatterPlot(filteredData, filteredCommits);
     updateFileDisplay(filteredCommits);
     renderCommitInfo(filteredData, filteredCommits);
   };
 }
+
 
 // ---------- 9. Top-level flow ----------
 const data = await loadData();
@@ -545,11 +548,12 @@ console.log("Commit objects:", commits);
 
 // initial full-range state
 filteredCommits = commits.slice();
+const initialData = filteredCommits.flatMap((d) => d.lines);
 
-// initial summary / chart / files
-renderCommitInfo(data, commits);
-renderScatterPlot(data, commits);
-updateFileDisplay(commits);
+// initial summary / chart / files (all commits)
+renderCommitInfo(initialData, filteredCommits);
+renderScatterPlot(initialData, filteredCommits);
+updateFileDisplay(filteredCommits);
 
 // setup time scale + slider
 timeScale = d3
