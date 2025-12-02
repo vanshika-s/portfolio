@@ -707,6 +707,18 @@ circle:hover {
   font-size: 0.9rem;
 }
 
+/* Let the SVG expand to fill the sticky container */
+#chart {
+  width: 100%;
+  height: 100%;
+}
+
+#chart svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 /* ---------- File unit visualization (Meta) ---------- */
 
 #files {
@@ -784,74 +796,46 @@ circle:hover {
 
 /* ---------- Scrollytelling layout ---------- */
 
-/* Scrolly layout container */
 #scrolly-1 {
   position: relative;
   display: flex;
-  gap: 2rem;
-  align-items: flex-start;
+  gap: 1rem;
   margin-top: 2rem;
 }
 
-/* Text column */
-#scatter-story {
-  position: relative;
+/* make both columns share the space */
+#scrolly-1 > * {
   flex: 1;
-  max-width: 32rem;
 }
 
-/* Each commit text block */
+#scatter-story {
+  position: relative;
+}
+
+/* each commit text block – a little space, but not huge gaps */
 #scatter-story .step {
-  margin: 0 0 1.25rem;     /* small gap between steps */
-  padding: 0.5rem 0;       /* light vertical padding */
+  margin: 0 0 1rem;
+  padding: 0.5rem 0;
   line-height: 1.5;
 }
 
-/* sticky chart on the right */
+/* sticky chart on the right, per spec */
 #scatter-plot {
   position: sticky;
   top: 0;
   left: 0;
+  bottom: auto;
+  height: 50vh;          /* important so sticky works */
 }
 
-/* on small screens, stack instead of 2 columns */
+/* stack on small screens */
 @media (max-width: 800px) {
   #scrolly-1 {
     flex-direction: column;
   }
 
-}
-
-/* -------- Scrollytelling layout (text + chart side-by-side) -------- */
-
-.chart-section {
-  margin-top: 2.5rem;
-}
-
-.chart-section > h2 {
-  margin-bottom: 1rem;
-}
-
-#scrolly-1 {
-  display: flex;
-  align-items: flex-start;
-  gap: 2rem;
-  margin-block: 1.5rem 3rem;
-}
-
-/* left column: commit narrative */
-#scatter-story {
-  flex: 1;
-}
-
-/* individual commit paragraphs */
-#scatter-story .step {
-  max-width: 32rem;
-  margin-block: 0.25rem 0.9rem;  /* tighter vertical spacing */
-}
-
-/* right column: chart + selection summary */
-#scatter-plot {
-  flex: 1.2;         /* a bit wider than the text column */
-  /* IMPORTANT: no more sticky positioning here */
+  #scatter-plot {
+    position: static;
+    height: auto;
+  }
 }

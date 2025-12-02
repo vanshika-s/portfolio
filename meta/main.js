@@ -332,6 +332,8 @@ function renderScatterPlot(data, commits) {
   const svg = d3
     .select("#chart")
     .append("svg")
+    .attr("width", "100%")
+    .attr("height", "100%")
     .attr("viewBox", `0 0 ${width} ${height}`)
     .style("overflow", "visible");
 
