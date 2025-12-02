@@ -265,6 +265,56 @@ function updateFileDisplay(commitsForFiles) {
     .attr("class", "loc");
 }
 
+// ---------- 7. Brush selector (rectangle + selection) ----------
+function createBrushSelector(svg, dotsGroup, xScale, yScale, commits) {
+  // use the SVG viewBox to get width/height
+  const { left, top, right, bottom } = svg.node().viewBox.baseVal;
+
+  // a little padding to match the plot area
+  const usableArea = {
+    left: 20,
+    right: right - 10,
+    top: 10,
+    bottom: bottom - 30,
+  };
+
+  const brush = d3
+    .brush()
+    .extent([
+      [usableArea.left, usableArea.top],
+      [usableArea.right, usableArea.bottom],
+    ])
+    .on("start brush end", brushed);
+
+  function isCommitSelected(selection, commit) {
+    if (!selection) return false;
+    const [[x0, y0], [x1, y1]] = selection;
+    const cx = xScale(commit.datetime);
+    const cy = yScale(commit.hourFrac);
+    return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
+  }
+
+  function brushed(event) {
+    const selection = event.selection;
+
+    // highlight selected dots
+    dotsGroup
+      .selectAll("circle")
+      .classed("selected", (d) => isCommitSelected(selection, d));
+
+    // update text + language breakdown
+    renderSelectionCount(selection, commits, isCommitSelected);
+    renderLanguageBreakdown(selection, commits, isCommitSelected);
+  }
+
+  // attach the brush to the svg
+  svg.append("g").attr("class", "brush").call(brush);
+
+  // move dots (and everything after overlay) above the brush overlay
+  // so that hover events on circles still work
+  svg.selectAll(".dots, .overlay ~ *").raise();
+}
+
 // ---------- 7. Scatterplot ----------
 function renderScatterPlot(data, commits) {
   const width = 1000;
@@ -369,36 +419,8 @@ function renderScatterPlot(data, commits) {
       d3.select(event.currentTarget).style("fill-opacity", 0.7);
       updateTooltipVisibility(false);
     });
-
-  // ---------- brush (selection rectangle) ----------
-  const brush = d3
-    .brush()
-    .extent([
-      [usableArea.left, usableArea.top],
-      [usableArea.right, usableArea.bottom],
-    ])
-    .on("start brush end", brushed);
-
-  function isCommitSelected(selection, commit) {
-    if (!selection) return false;
-    const [[x0, y0], [x1, y1]] = selection;
-    const cx = xScale(commit.datetime);
-    const cy = yScale(commit.hourFrac);
-    return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
-  }
-
-  function brushed(event) {
-    const selection = event.selection;
-
-    dots
-      .selectAll("circle")
-      .classed("selected", (d) => isCommitSelected(selection, d));
-
-    renderSelectionCount(selection, commits, isCommitSelected);
-    renderLanguageBreakdown(selection, commits, isCommitSelected);
-  }
-
-  svg.append("g").attr("class", "brush").call(brush);
+    // hook up brushing / selection
+    createBrushSelector(svg, dots, xScale, yScale, commits);
 }
 
 function updateScatterPlot(data, commits) {
