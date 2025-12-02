@@ -267,10 +267,8 @@ function updateFileDisplay(commitsForFiles) {
 
 // ---------- 7. Brush selector (rectangle + selection) ----------
 function createBrushSelector(svg, dotsGroup, xScale, yScale, commits) {
-  // use the SVG viewBox to get width/height
   const { left, top, right, bottom } = svg.node().viewBox.baseVal;
 
-  // a little padding to match the plot area
   const usableArea = {
     left: 20,
     right: right - 10,
@@ -297,23 +295,21 @@ function createBrushSelector(svg, dotsGroup, xScale, yScale, commits) {
   function brushed(event) {
     const selection = event.selection;
 
-    // highlight selected dots
     dotsGroup
       .selectAll("circle")
       .classed("selected", (d) => isCommitSelected(selection, d));
 
-    // update text + language breakdown
     renderSelectionCount(selection, commits, isCommitSelected);
     renderLanguageBreakdown(selection, commits, isCommitSelected);
   }
 
-  // attach the brush to the svg
-  svg.append("g").attr("class", "brush").call(brush);
+  // ⬅️ IMPORTANT: attach brush to the SVG directly
+  svg.call(brush);
 
-  // move dots (and everything after overlay) above the brush overlay
-  // so that hover events on circles still work
+  // put dots (and anything after overlay) above the brush overlay
   svg.selectAll(".dots, .overlay ~ *").raise();
 }
+
 
 // ---------- 7. Scatterplot ----------
 function renderScatterPlot(data, commits) {
