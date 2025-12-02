@@ -1,5 +1,6 @@
 // meta/main.js
 import "../global.js"; // nav + theme toggle
+// meta/main.js
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 
 // --------------- 1. Load + clean data ---------------
@@ -207,7 +208,6 @@ function renderLanguageBreakdown(selection, commits, isCommitSelected) {
   // Clear previous content
   container.innerHTML = "";
 
-  // One block per language
   for (const [language, count] of breakdown) {
     const proportion = count / lines.length;
     const formatted = d3.format(".1~%")(proportion);
@@ -222,7 +222,40 @@ function renderLanguageBreakdown(selection, commits, isCommitSelected) {
   }
 }
 
-// --------------- 6. Scatterplot ---------------
+// --------------- 6. NEW: file unit visualization ---------------
+
+function updateFileDisplay(commits) {
+  const container = d3.select("#files");
+  if (container.empty()) return;
+
+  // flatten all line-level rows from the currently visible commits
+  const lines = commits.flatMap((d) => d.lines);
+
+  // group by file name
+  const files = d3
+    .groups(lines, (d) => d.file)
+    .map(([name, lines]) => ({ name, lines }));
+
+  // bind data to <div> children inside #files
+  const filesContainer = container
+    .selectAll("div")
+    .data(files, (d) => d.name)
+    .join(
+      (enter) =>
+        enter.append("div").call((div) => {
+          div.append("dt").append("code");
+          div.append("dd");
+        }),
+      (update) => update,
+      (exit) => exit.remove()
+    );
+
+  // update filenames + line counts
+  filesContainer.select("dt > code").text((d) => d.name);
+  filesContainer.select("dd").text((d) => `${d.lines.length} lines`);
+}
+
+// --------------- 7. Scatterplot ---------------
 
 function renderScatterPlot(data, commits) {
   const width = 1000;
@@ -303,13 +336,13 @@ function renderScatterPlot(data, commits) {
     .attr("class", "y-axis")
     .call(yAxis);
 
-  // --- dots (sorted so small ones are on top) ---
+  // --- dots ---
   const sortedCommits = d3.sort(commits, (d) => -d.totalLines);
   dotsGroup = svg.append("g").attr("class", "dots");
 
   const dots = dotsGroup
     .selectAll("circle")
-    .data(sortedCommits, (d) => d.id) // key by commit id  (Step 1.3)
+    .data(sortedCommits, (d) => d.id) // key by commit id (1.3)
     .join("circle")
     .attr("cx", (d) => xScale(d.datetime))
     .attr("cy", (d) => yScale(d.hourFrac))
@@ -362,14 +395,14 @@ function renderScatterPlot(data, commits) {
     }
 
     svgEl.call(brush);
-
     svgEl.selectAll(".dots, .overlay ~ *").raise();
   }
 
   createBrushSelector(svg, dotsGroup, xScale, yScale, commits);
 }
 
-// --- update function used by the slider (Step 1.2 + 1.3) ---
+// --- update function used by the slider ---
+
 function updateScatterPlot(data, commits) {
   if (!dotsGroup) return;
 
@@ -388,7 +421,6 @@ function updateScatterPlot(data, commits) {
   const svg = d3.select("#chart").select("svg");
   if (svg.empty()) return;
 
-  // update x-scale + radius scale based on filtered commits
   xScale.domain(d3.extent(commits, (d) => d.datetime)).nice();
 
   const [minLines, maxLines] = d3.extent(commits, (d) => d.totalLines);
@@ -426,7 +458,7 @@ function updateScatterPlot(data, commits) {
     });
 }
 
-// --------------- 7. Top-level flow ---------------
+// --------------- 8. Top-level flow ---------------
 
 const data = await loadData();
 const commits = processCommits(data);
@@ -437,7 +469,7 @@ console.log("Commit objects:", commits);
 renderCommitInfo(data, commits);
 renderScatterPlot(data, commits);
 
-// ----- slider + filtering (Steps 1.1–1.2) -----
+// ----- slider + filtering -----
 
 timeScale = d3
   .scaleTime()
@@ -464,9 +496,10 @@ function onTimeSliderChange() {
   filteredCommits = commits.filter((d) => d.datetime <= commitMaxTime);
 
   updateScatterPlot(data, filteredCommits);
+  updateFileDisplay(filteredCommits);   // NEW: keep file list in sync
 }
 
 if (sliderEl) {
   sliderEl.addEventListener("input", onTimeSliderChange);
-  onTimeSliderChange(); // initialize display + filtered plot
+  onTimeSliderChange(); // initialize display + filtered plot + file list
 }

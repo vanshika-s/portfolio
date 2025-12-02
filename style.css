@@ -662,3 +662,39 @@ circle.selected {
 .chart-section {
   margin-top: 2rem;
 }
+
+/* File list (unit visualization) under the slider */
+#files {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  row-gap: 0.25rem;
+  column-gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+/* each file is wrapped in a div that reuses the parent grid via subgrid */
+#files > div {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+}
+
+/* filename (left) */
+#files dt {
+  grid-column: 1;
+  margin: 0;
+}
+
+/* line count (right) */
+#files dd {
+  grid-column: 2;
+  margin: 0;
+  text-align: right;
+}
+
+/* monospace for filenames */
+#files code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  font-size: 0.9rem;
+}
