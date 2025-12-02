@@ -809,7 +809,7 @@ circle:hover {
   flex: 1;
 }
 
-/* commit paragraphs – tighten spacing a bit */
+/* commit paragraphs – tighter spacing */
 #scatter-story .step {
   max-width: 32rem;
   margin-block: 0.25rem 0.9rem;
@@ -825,6 +825,32 @@ circle:hover {
   gap: 2rem;          /* space between graph and dots */
 }
 
+/* dots block stays pinned once it reaches the top */
+#files-sticky {
+  position: sticky;
+  top: 1rem;              /* how far from top when “stuck” */
+  align-self: flex-start; /* important for sticky in a flex column */
+}
+
+/* give filenames a bit less and dots a bit more space */
+#files {
+  display: grid;
+  grid-template-columns: 1fr 3fr;  /* filenames | dots */
+  row-gap: 0.5rem;
+}
+
+/* line up the dots nicely and keep them visible horizontally */
+#files dd {
+  padding-top: 0.4em;
+  gap: 0.1em;
+}
+
+/* slightly smaller dots so they don’t overflow off the right side */
+.loc {
+  width: 0.45em;
+  aspect-ratio: 1;
+}
+
 /* responsive: stack columns on small screens */
 @media (max-width: 800px) {
   #scrolly-1 {
@@ -834,45 +860,9 @@ circle:hover {
   #scatter-plot {
     flex: none;
   }
-}
 
-#files {
-  grid-template-columns: 1fr 3fr;  /* little more room for dots */
-}
-
-#files dd {
-  padding-top: 0.4em;
-  gap: 0.1em;
-}
-
-.loc {
-  width: 0.4em;       /* slightly smaller dots */
-}
-
-/* Right column is just a vertical stack: graph on top, dots below */
-#scatter-plot {
-  flex: 1.2;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-/* 🔽 dots stay pinned once they reach the top of the viewport */
-#files-sticky {
-  position: sticky;
-  top: 1rem;          /* how far from the top to “stick” */
-}
-
-/* optional: make sure the dots block doesn't get too wide */
-#files {
-  /* these can stay as you had them, just repeating the key bits */
-  display: grid;
-  grid-template-columns: 1fr 3fr;  /* filenames | dots */
-  row-gap: 0.5rem;
-}
-
-/* slightly smaller dots if you still worry about horizontal overflow */
-.loc {
-  width: 0.45em;
-  aspect-ratio: 1;
+  /* on tiny screens, let the dots scroll away normally */
+  #files-sticky {
+    position: static;
+  }
 }
