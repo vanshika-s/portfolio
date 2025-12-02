@@ -1,6 +1,9 @@
 // meta/main.js
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 
+// colors for technologies / line types
+const techColor = d3.scaleOrdinal(d3.schemeTableau10);
+
 // ---------- 1. Load + clean CSV (one row per line of code) ----------
 async function loadData() {
   const data = await d3.csv("loc.csv", (row) => ({
@@ -219,8 +222,7 @@ function renderLanguageBreakdown(selection, commits, isCommitSelected) {
   }
 }
 
-// ---------- 6. Files list (Step 2.1) ----------
-// ---------- 6. Files list (Step 2.1 + 2.2) ----------
+// ---------- 6. Files list (Step 2.1 + 2.2 + 2.3 + 2.4) ----------
 function updateFileDisplay(commitsForFiles) {
   const container = d3.select("#files");
 
@@ -233,10 +235,11 @@ function updateFileDisplay(commitsForFiles) {
   // All line-level rows from the commits in range
   const lines = commitsForFiles.flatMap((d) => d.lines);
 
-  // Group by file
+  // Group by file, then SORT by number of lines (descending)
   const files = d3
     .groups(lines, (d) => d.file)
-    .map(([name, lines]) => ({ name, lines }));
+    .map(([name, lines]) => ({ name, lines }))
+    .sort((a, b) => b.lines.length - a.lines.length);   // 2.3
 
   // One <div> wrapper per file
   const filesContainer = container
@@ -262,8 +265,11 @@ function updateFileDisplay(commitsForFiles) {
   dd.selectAll("div")
     .data((d) => d.lines)
     .join("div")
-    .attr("class", "loc");
+    .attr("class", "loc")
+    // 2.4 – color by technology / type
+    .attr("style", (line) => `--color: ${techColor(line.type)}`);
 }
+
 
 // ---------- 7. Brush selector (rectangle + selection) ----------
 function createBrushSelector(svg, dotsGroup, xScale, yScale, commits) {
