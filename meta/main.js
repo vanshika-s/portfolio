@@ -71,6 +71,9 @@ function processCommits(data) {
 function renderCommitInfo(data, commits) {
   const container = d3.select("#stats");
 
+  // 🔁 Clear old summary so we can re-draw it with new numbers
+  container.selectAll("*").remove();
+
   container.append("h2").text("Summary");
 
   const dl = container.append("dl").attr("class", "stats");
@@ -84,6 +87,45 @@ function renderCommitInfo(data, commits) {
     }
     dl.append("dd").text(value);
   }
+
+  if (!data.length || !commits.length) {
+    // no commits in this range – show zeros
+    addStat("Total LOC", 0, true);
+    addStat("Commits", 0);
+    addStat("Files", 0);
+    addStat("Max depth", 0);
+    addStat("Longest line", 0);
+    addStat("Max lines", 0);
+    return;
+  }
+
+  // Total LOC = one row per line (within the filtered range)
+  addStat("Total LOC", data.length, true);
+
+  // Total commits
+  addStat("Commits", commits.length);
+
+  // Number of files
+  const fileCount = d3.group(data, (d) => d.file).size;
+  addStat("Files", fileCount);
+
+  // Max depth
+  const maxDepth = d3.max(data, (d) => d.depth);
+  addStat("Max depth", maxDepth);
+
+  // Longest line length in characters
+  const longestLineLen = d3.max(data, (d) => d.length);
+  addStat("Longest line", longestLineLen);
+
+  // Max lines in a single file
+  const fileLengths = d3.rollups(
+    data,
+    (v) => d3.max(v, (d) => d.line),
+    (d) => d.file
+  );
+  const maxLinesInFile = d3.max(fileLengths, (d) => d[1]);
+  addStat("Max lines", maxLinesInFile);
+}
 
   // Total LOC = one row per line
   addStat("Total LOC", data.length, true);
@@ -492,6 +534,18 @@ function onTimeSliderChange() {
       timeStyle: "short",
     });
   }
+
+  // commits up to this time
+  filteredCommits = commits.filter((d) => d.datetime <= commitMaxTime);
+
+  // 🔹 all line-level rows for those commits
+  const filteredData = filteredCommits.flatMap((d) => d.lines);
+
+  // update all the visuals that depend on the filter
+  updateScatterPlot(data, filteredCommits);
+  updateFileDisplay(filteredCommits);
+  renderCommitInfo(filteredData, filteredCommits);   // 🔥 summary now matches slider
+}
 
   filteredCommits = commits.filter((d) => d.datetime <= commitMaxTime);
 
