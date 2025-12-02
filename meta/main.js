@@ -145,13 +145,15 @@ function renderTooltipContent(commit) {
 
 function updateTooltipVisibility(isVisible) {
   const tooltip = document.getElementById("commit-tooltip");
+  if (!tooltip) return;
   tooltip.hidden = !isVisible;
 }
 
 function updateTooltipPosition(event) {
   const tooltip = document.getElementById("commit-tooltip");
-  const offset = 12;
+  if (!tooltip) return;
 
+  const offset = 12;
   let x = event.clientX + offset;
   let y = event.clientY + offset;
 

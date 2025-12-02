@@ -477,15 +477,18 @@ dl.info dd {
 /* Tooltip behavior + look */
 .tooltip {
   position: fixed;
-  top: 1em;
-  left: 1em;
+  /* we let JS set top/left, so no defaults here */
+  padding: 0.75rem 1rem;
   background-color: rgba(255, 255, 255, 0.92);
   color: inherit;
   border-radius: 0.5rem;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(6px);
   border: 1px solid oklch(90% 0.02 240 / 0.8);
-  pointer-events: none; /* let mouse events go “through” the tooltip */
+  pointer-events: none; /* mouse events pass through */
+  max-width: 260px;
+  font-size: 0.85rem;
+  z-index: 999;          /* <<< always above the SVG */
   transition-duration: 200ms;
   transition-property: opacity, visibility, transform;
 }
