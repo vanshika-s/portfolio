@@ -72,6 +72,70 @@ export function renderProjects(projects, containerElement, headingLevel = "h2") 
     // Fall back values in case some fields are missing
     const title = project.title || "Untitled project";
     const description = project.description || "";
+    const year = project.year || "";
+    const rawImage = project.image || "";
+    const url = project.url || null;
+
+    // Build a correct image URL
+    let imageSrc = "";
+    if (rawImage) {
+      if (rawImage.startsWith("http")) {
+        // already an absolute URL
+        imageSrc = rawImage;
+      } else {
+        // relative path in our repo, e.g. "images/1.png"
+        imageSrc = BASE_PATH + rawImage;
+      }
+    }
+
+    // Build title HTML (linked if url exists)
+    let titleHTML = title;
+    if (url) {
+      const href = url.startsWith("http") ? url : BASE_PATH + url;
+      titleHTML = `<a href="${href}" target="_blank" rel="noopener noreferrer">${title}</a>`;
+    }
+
+    // Use innerHTML so we can dynamically set the heading tag
+    article.innerHTML = `
+      <${tag}>${titleHTML}</${tag}>
+      ${imageSrc ? `<img src="${imageSrc}" alt="${title}">` : ""}
+      <div class="project-text">
+        <p>${description}</p>
+        ${year ? `<p class="project-year">${year}</p>` : ""}
+        ${url
+          ? `<a class="project-link" href="${url.startsWith("http") ? url : BASE_PATH + url}" target="_blank" rel="noopener noreferrer">
+               View project →
+             </a>`
+          : ""}
+      </div>
+    `;
+
+    containerElement.appendChild(article);
+  }
+}
+
+  // 2. Clear existing content so we don't duplicate
+  containerElement.innerHTML = "";
+
+  // 3. Pick a safe heading level (fallback to h2 if invalid)
+  const validHeadings = ["h1", "h2", "h3", "h4", "h5", "h6"];
+  const tag = validHeadings.includes(headingLevel) ? headingLevel : "h2";
+
+  // 4. Handle empty project list nicely
+  if (projects.length === 0) {
+    const msg = document.createElement("p");
+    msg.textContent = "No projects to show yet. Check back soon!";
+    containerElement.appendChild(msg);
+    return;
+  }
+
+  // 5. Create an <article> for each project
+  for (let project of projects) {
+    const article = document.createElement("article");
+
+    // Fall back values in case some fields are missing
+    const title = project.title || "Untitled project";
+    const description = project.description || "";
     const year = project.year || "";          // NEW
     const rawImage = project.image || "";
 
