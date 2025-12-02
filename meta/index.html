@@ -2,18 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Codebase Meta Analysis</title>
-
+    <title>Meta – Codebase Analysis</title>
     <link rel="stylesheet" href="../style.css" />
-    <script src="../global.js" type="module"></script>
   </head>
   <body>
+    <!-- global nav + theme selector from global.js -->
     <main class="meta-page">
       <header class="meta-header">
         <h1>Codebase Meta Analysis</h1>
 
-        <div class="commit-filter">
-          <label for="commit-progress">Show commits until:</label>
+        <label class="commit-filter">
+          <span>Show commits until:</span>
           <input
             type="range"
             id="commit-progress"
@@ -21,44 +20,47 @@
             max="100"
             value="100"
           />
-          <!-- This shows the selected cutoff time -->
           <time id="commit-max-time"></time>
-        </div>
+        </label>
       </header>
-
-      <dl id="files">
-        <!-- one <div> per file will be injected by D3 -->
-      </dl>
 
       <h2>Meta</h2>
 
+      <!-- files list (Step 2) -->
+      <dl id="files"></dl>
+
+      <!-- summary stats -->
       <section id="stats"></section>
 
+      <!-- scatterplot + brushing -->
       <section class="chart-section">
         <h2>Commits by time of day</h2>
         <div id="chart"></div>
+
+        <p id="selection-count">No commits selected</p>
+        <dl id="language-breakdown"></dl>
       </section>
 
-      <p id="selection-count">No commits selected</p>
-      <dl id="language-breakdown"></dl>
-
-      <!-- Tooltip for commits -->
+      <!-- tooltip -->
       <dl id="commit-tooltip" class="info tooltip" hidden>
         <dt>Commit</dt>
-        <dd>
-          <a id="commit-link" href="#" target="_blank" rel="noopener">—</a>
-        </dd>
+        <dd><a id="commit-link" href="#" target="_blank" rel="noreferrer"></a></dd>
+
         <dt>Date</dt>
-        <dd id="commit-date">—</dd>
+        <dd id="commit-date"></dd>
+
         <dt>Time</dt>
-        <dd id="commit-time">—</dd>
+        <dd id="commit-time"></dd>
+
         <dt>Author</dt>
-        <dd id="commit-author">—</dd>
-        <dt>Lines changed</dt>
-        <dd id="commit-lines">—</dd>
+        <dd id="commit-author"></dd>
+
+        <dt>Lines touched</dt>
+        <dd id="commit-lines"></dd>
       </dl>
     </main>
 
-    <script src="main.js" type="module"></script>
+    <script type="module" src="../global.js"></script>
+    <script type="module" src="./main.js"></script>
   </body>
 </html>

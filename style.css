@@ -645,12 +645,17 @@ circle.selected {
 
 /* circles already have transitions from Lab 6: keep it */
 .dots circle {
-  transition: all 200ms ease;
+  transition: all 200ms ease, r calc(var(--r) * 100ms);
+  transform-origin: center;
+  transform-box: fill-box;
 
-  /* Step 1.4 – animate new circles from r:0 */
   @starting-style {
-    r: 0;
+    r: 0;           /* new circles grow from radius 0 */
   }
+}
+
+circle:hover {
+  transform: scale(1.5);
 }
 
 .dots circle.selected {
