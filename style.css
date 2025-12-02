@@ -796,17 +796,18 @@ circle:hover {
 
 /* ---------- Scrollytelling layout: text left, viz right ---------- */
 
+/* 2-column grid: text | viz */
 #scrolly-1 {
-  position: relative;
-  display: flex;
-  gap: 2rem;
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2.5fr);
+  column-gap: 2rem;
   align-items: flex-start;
   margin-block: 1.5rem 3rem;
 }
 
 /* left column: commit narrative */
 #scatter-story {
-  flex: 1;
+  grid-column: 1;
 }
 
 /* commit paragraphs – tighter spacing */
@@ -819,27 +820,26 @@ circle:hover {
 
 /* right column: chart on top, dots below */
 #scatter-plot {
-  flex: 1.2;
+  grid-column: 2;
   display: flex;
   flex-direction: column;
-  gap: 2rem;          /* space between graph and dots */
+  gap: 2rem;   /* space between chart and dots */
 }
 
-/* dots block stays pinned once it reaches the top */
+/* dots block sticks once it reaches the top of the viewport */
 #files-sticky {
   position: sticky;
-  top: 1rem;              /* how far from top when “stuck” */
-  align-self: flex-start; /* important for sticky in a flex column */
+  top: 1rem;   /* distance from top when “stuck” */
 }
 
-/* give filenames a bit less and dots a bit more space */
+/* filenames | dots layout */
 #files {
   display: grid;
-  grid-template-columns: 1fr 3fr;  /* filenames | dots */
+  grid-template-columns: 1fr 3fr;
   row-gap: 0.5rem;
 }
 
-/* line up the dots nicely and keep them visible horizontally */
+/* dot row styling */
 #files dd {
   padding-top: 0.4em;
   gap: 0.1em;
@@ -854,11 +854,11 @@ circle:hover {
 /* responsive: stack columns on small screens */
 @media (max-width: 800px) {
   #scrolly-1 {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
   #scatter-plot {
-    flex: none;
+    grid-column: 1;
   }
 
   /* on tiny screens, let the dots scroll away normally */
