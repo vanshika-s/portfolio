@@ -543,12 +543,15 @@ circle.selected {
     ui-monospace, monospace;
 }
 
+/* remove default margins */
 #language-breakdown dt,
 #language-breakdown dd {
   margin: 0;
 }
 
+/* top row: CSS / JS / HTML */
 #language-breakdown dt {
+  grid-row: 1;                 /* all labels in the first row */
   font-size: 2rem;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -556,6 +559,12 @@ circle.selected {
   margin-bottom: 0.25rem;
 }
 
+/* second row: “82 lines” etc. */
+#language-breakdown dd {
+  grid-row: 2;                 /* all details in the second row */
+}
+
+/* inside each dd we stack lines + percent */
 #language-breakdown dd .lines {
   display: block;
   font-size: 1.6rem;
