@@ -163,7 +163,6 @@ export function renderProjects(projects, containerElement, headingLevel = "h2") 
 
     containerElement.appendChild(article);
   }
-}
 
 let pages = [
   { url: "",          title: "Home" },
