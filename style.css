@@ -782,21 +782,27 @@ circle:hover {
   cursor: crosshair;
 }
 
-/* ---------- Scrollytelling layout (Meta) ---------- */
+/* ---------- Scrollytelling layout ---------- */
 
 #scrolly-1 {
   position: relative;
   display: flex;
-  gap: 1rem;
-
-  > * {
-    flex: 1;
-  }
+  gap: 2rem;
+  align-items: flex-start;
+  margin-top: 2rem;
 }
 
 #scatter-story {
   position: relative;
-  max-width: 32rem;   /* keep text readable */
+  flex: 1;
+  max-width: 32rem;
+}
+
+/* each text step */
+#scatter-story .step {
+  margin: 0 0 2rem;      /* MUCH less vertical gap */
+  padding-bottom: 30vh;  /* height to trigger scroll events */
+  line-height: 1.5;
 }
 
 /* sticky chart on the right */
@@ -804,11 +810,19 @@ circle:hover {
   position: sticky;
   top: 0;
   left: 0;
-  bottom: auto;
-  height: 50vh;       /* IMPORTANT for sticky to work */
+  height: 60vh;          /* important for sticky to work */
+  display: flex;
+  flex-direction: column;
 }
 
-/* individual narrative steps */
-#scatter-story .step {
-  padding-bottom: 60vh;   /* space so each step “holds” the chart */
+/* on small screens, stack instead of 2 columns */
+@media (max-width: 800px) {
+  #scrolly-1 {
+    flex-direction: column;
+  }
+
+  #scatter-plot {
+    position: static;
+    height: auto;
+  }
 }
