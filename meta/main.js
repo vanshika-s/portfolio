@@ -233,18 +233,27 @@ function renderScatterPlot(data, commits) {
   const [minLines, maxLines] = d3.extent(commits, (d) => d.totalLines);
   const rScale = d3.scaleSqrt().domain([minLines, maxLines]).range([3, 20]);
 
-  // gridlines
+// --- gridlines (drawn before axes & dots) ---
   const gridlines = svg
     .append("g")
     .attr("class", "gridlines")
     .attr("transform", `translate(${usableArea.left}, 0)`);
 
   gridlines.call(
-    d3.axisLeft(yScale).tickFormat("").tickSize(-usableArea.width)
+    d3.axisLeft(yScale)
+      .tickFormat("")                 // no labels on the gridline axis
+      .tickSize(-usableArea.width)    // extend lines across the chart
   );
 
   gridlines
     .selectAll("line")
+    .attr("stroke", (d) => {
+      const h = d % 24;
+      if (h < 6 || h >= 20) return "#1e3a8a"; // night
+      if (h < 12) return "#f97316";           // morning
+      if (h < 18) return "#0ea5e9";           // afternoon
+      return "#2563eb";                       // evening
+    })
     .attr("stroke-opacity", 0.4)
     .attr("stroke-width", 1.2);
 
