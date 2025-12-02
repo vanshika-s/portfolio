@@ -822,36 +822,36 @@ circle:hover {
 
 }
 
-/* ----- Scrollytelling layout (scatter text + chart) ----- */
+/* -------- Scrollytelling layout (text + chart side-by-side) -------- */
 
-#scrolly-1 {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr); /* text | big chart */
-  align-items: flex-start;
-  gap: 2.5rem;
+.chart-section {
   margin-top: 2.5rem;
 }
 
-/* left column: commit story */
+.chart-section > h2 {
+  margin-bottom: 1rem;
+}
+
+#scrolly-1 {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-block: 1.5rem 3rem;
+}
+
+/* left column: commit narrative */
 #scatter-story {
-  position: relative;
+  flex: 1;
 }
 
-/* each commit “step” – tighten vertical spacing */
+/* individual commit paragraphs */
 #scatter-story .step {
-  margin-bottom: 1.5rem;   /* less space between paragraphs */
+  max-width: 32rem;
+  margin-block: 0.25rem 0.9rem;  /* tighter vertical spacing */
 }
 
-/* right column: chart stays fixed while we’re inside scrolly-1 */
+/* right column: chart + selection summary */
 #scatter-plot {
-  position: sticky;
-  top: 4.5rem;             /* below page header + slider */
-}
-
-/* make SVG large and stable */
-#chart svg {
-  width: 100%;
-  max-width: 700px;        /* nice big chart */
-  height: auto;
-  display: block;
+  flex: 1.2;         /* a bit wider than the text column */
+  /* IMPORTANT: no more sticky positioning here */
 }
