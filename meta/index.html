@@ -2,63 +2,72 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Code Meta Analysis</title>
-    <link rel="stylesheet" href="../style.css">
+    <title>Meta · Codebase Analysis</title>
+
+    <!-- your global site styles -->
+    <link rel="stylesheet" href="../global.css" />
+    <!-- meta-specific styles -->
+    <link rel="stylesheet" href="meta.css" />
+
+    <script type="module" src="main.js"></script>
   </head>
   <body>
-    <h1>Codebase Meta Analysis</h1>
+    <main class="meta-page">
+      <h1>Codebase Meta Analysis</h1>
 
+      <!-- header row: title + slider -->
+      <header class="meta-header">
+        <h2>Meta</h2>
 
-    <header class="meta-header">
-        <h1>Meta</h1>
-
-        <label class="commit-filter">
+        <div class="commit-filter">
+          <label for="commit-progress">
             Show commits until:
             <input
-                id="commit-progress"
-                type="range"
-                min="0"
-                max="100"
-                value="100"
+              type="range"
+              id="commit-progress"
+              min="0"
+              max="100"
+              value="100"
             />
-            <time id="commit-time"></time>
-        </label>
-    </header>
-    
-    <!-- Summary block -->
-    <div id="stats"></div>
+          </label>
+          <time id="commit-max-time"></time>
+        </div>
+      </header>
 
-    <h2>Commits by time of day</h2>
-    <div id="chart"></div>
+      <!-- summary stats block -->
+      <section id="stats"></section>
 
-    <!-- Tooltip -->
-    <dl id="commit-tooltip" class="info tooltip" hidden>
-      <dt>Commit</dt>
-      <dd><a href="" id="commit-link" target="_blank"></a></dd>
+      <!-- scatterplot section -->
+      <section class="chart-section">
+        <h2>Commits by time of day</h2>
+        <div id="chart"></div>
 
-      <dt>Date</dt>
-      <dd id="commit-date"></dd>
+        <p id="selection-count">No commits selected</p>
+        <dl id="language-breakdown"></dl>
+      </section>
 
-      <dt>Time</dt>
-      <dd id="commit-time"></dd>
-
-      <dt>Author</dt>
-      <dd id="commit-author"></dd>
-
-      <dt>Lines edited</dt>
-      <dd id="commit-lines"></dd>
-    </dl>
-
-    <!-- Brushing info -->
-    <p id="selection-count">No commits selected</p>
-
-    <!-- Language breakdown -->
-    <dl id="language-breakdown"></dl>
-
-    <!-- Site-wide nav/theme -->
-    <script type="module" src="../global.js"></script>
-
-    <!-- Meta-page logic -->
-    <script type="module" src="./main.js"></script>
+      <!-- tooltip for hover over points -->
+      <section id="commit-tooltip" class="commit-tooltip" hidden>
+        <h3>
+          Commit
+          <a id="commit-link" href="#" target="_blank" rel="noreferrer">
+            (hash)
+          </a>
+        </h3>
+        <p>
+          <span id="commit-date"></span>
+          &middot;
+          <time id="commit-tooltip-time"></time>
+        </p>
+        <p>
+          <strong>Author:</strong>
+          <span id="commit-author"></span>
+        </p>
+        <p>
+          <strong>Lines changed:</strong>
+          <span id="commit-lines"></span>
+        </p>
+      </section>
+    </main>
   </body>
 </html>

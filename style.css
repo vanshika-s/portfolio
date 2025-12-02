@@ -597,3 +597,63 @@ circle.selected {
   font-size: 0.85rem;
   opacity: 0.8;
 }
+
+.meta-page {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+.meta-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* right side of header: slider + time */
+.commit-filter {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+#commit-progress {
+  width: min(480px, 60vw);
+}
+
+/* label under slider showing exact time */
+#commit-max-time {
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+/* tooltip positioning */
+.commit-tooltip {
+  position: fixed;
+  padding: 0.75rem 1rem;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.15);
+  max-width: 260px;
+  font-size: 0.85rem;
+  z-index: 10;
+}
+
+/* circles already have transitions from Lab 6: keep it */
+.dots circle {
+  transition: all 200ms ease;
+}
+
+.dots circle.selected {
+  stroke: black;
+  stroke-width: 1.5;
+}
+
+/* optional: make chart section breathe a bit */
+.chart-section {
+  margin-top: 2rem;
+}
