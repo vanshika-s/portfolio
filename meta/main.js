@@ -241,47 +241,6 @@ function updateFileDisplay(commitsForFiles) {
 }
 
 // ---------- 7. Scatterplot ----------
-function createBrushSelector(svg, dotsGroup, xScale, yScale, commits) {
-  const { left, top, right, bottom } = svg.node().viewBox.baseVal;
-  const usableArea = {
-    left: 20,
-    right: right - 10,
-    top: 10,
-    bottom: bottom - 30,
-  };
-
-  const brush = d3
-    .brush()
-    .extent([
-      [usableArea.left, usableArea.top],
-      [usableArea.right, usableArea.bottom],
-    ])
-    .on("start brush end", brushed);
-
-  function isCommitSelected(selection, commit) {
-    if (!selection) return false;
-
-    const [[x0, y0], [x1, y1]] = selection;
-    const cx = xScale(commit.datetime);
-    const cy = yScale(commit.hourFrac);
-    return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
-  }
-
-  function brushed(event) {
-    const selection = event.selection;
-
-    dotsGroup
-      .selectAll("circle")
-      .classed("selected", (d) => isCommitSelected(selection, d));
-
-    renderSelectionCount(selection, commits, isCommitSelected);
-    renderLanguageBreakdown(selection, commits, isCommitSelected);
-  }
-
-  svg.call(brush);
-  svg.selectAll(".dots, .overlay ~ *").raise();
-}
-
 function renderScatterPlot(data, commits) {
   const width = 1000;
   const height = 600;
@@ -365,14 +324,10 @@ function renderScatterPlot(data, commits) {
     .join("circle")
     .attr("cx", (d) => xScale(d.datetime))
     .attr("cy", (d) => yScale(d.hourFrac))
-    .attr("r", (d) => {
+    .attr("r", function (d) {
       const r = rScale(d.totalLines);
-      d3.select(this).attr("--r", r);
+      this.style.setProperty("--r", r); // for CSS timing if you want it
       return r;
-    })
-    .each(function (d) {
-      const r = rScale(d.totalLines);
-      this.style.setProperty("--r", r);
     })
     .attr("fill", "steelblue")
     .style("fill-opacity", 0.7)
@@ -390,7 +345,35 @@ function renderScatterPlot(data, commits) {
       updateTooltipVisibility(false);
     });
 
-  createBrushSelector(svg, dots, xScale, yScale, commits);
+  // ---------- brush (selection rectangle) ----------
+  const brush = d3
+    .brush()
+    .extent([
+      [usableArea.left, usableArea.top],
+      [usableArea.right, usableArea.bottom],
+    ])
+    .on("start brush end", brushed);
+
+  function isCommitSelected(selection, commit) {
+    if (!selection) return false;
+    const [[x0, y0], [x1, y1]] = selection;
+    const cx = xScale(commit.datetime);
+    const cy = yScale(commit.hourFrac);
+    return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
+  }
+
+  function brushed(event) {
+    const selection = event.selection;
+
+    dots
+      .selectAll("circle")
+      .classed("selected", (d) => isCommitSelected(selection, d));
+
+    renderSelectionCount(selection, commits, isCommitSelected);
+    renderLanguageBreakdown(selection, commits, isCommitSelected);
+  }
+
+  svg.append("g").attr("class", "brush").call(brush);
 }
 
 function updateScatterPlot(data, commits) {
@@ -411,9 +394,7 @@ function updateScatterPlot(data, commits) {
   };
 
   // update x scale domain
-  xScale = xScale
-    .domain(d3.extent(commits, (d) => d.datetime))
-    .nice();
+  xScale = xScale.domain(d3.extent(commits, (d) => d.datetime)).nice();
 
   const [minLines, maxLines] = d3.extent(commits, (d) => d.totalLines);
   const rScale = d3.scaleSqrt().domain([minLines, maxLines]).range([3, 20]);
@@ -434,14 +415,10 @@ function updateScatterPlot(data, commits) {
     .join("circle")
     .attr("cx", (d) => xScale(d.datetime))
     .attr("cy", (d) => yScale(d.hourFrac))
-    .attr("r", (d) => {
-      const r = rScale(d.totalLines);
-      d3.select(this).attr("--r", r);
-      return r;
-    })
-    .each(function (d) {
+    .attr("r", function (d) {
       const r = rScale(d.totalLines);
       this.style.setProperty("--r", r);
+      return r;
     })
     .attr("fill", "steelblue")
     .style("fill-opacity", 0.7)
