@@ -73,7 +73,7 @@
   },
   {
     "title": "Bikewatching",
-    "year": 2024,
+    "year": "2025",
     "description": "An interactive map that explores Boston-area bike traffic over the course of the day using Mapbox, D3, and real Bluebikes data.",
     "image": "images/bikewatching.png",
     "url": "https://vanshika-s.github.io/bikewatching/"
