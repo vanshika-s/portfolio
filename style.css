@@ -794,52 +794,57 @@ circle:hover {
   cursor: crosshair;
 }
 
-/* ---------- Scrollytelling layout ---------- */
+/* ---------- Scrollytelling layout: text left, viz right ---------- */
 
 #scrolly-1 {
   position: relative;
   display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-block: 1.5rem 3rem;
 }
 
-/* make both columns share the space */
-#scrolly-1 > * {
+/* left column: commit narrative */
+#scatter-story {
   flex: 1;
 }
 
-#scatter-story {
-  position: relative;
-}
-
-/* each commit text block – a little space, but not huge gaps */
+/* commit paragraphs – tighten spacing a bit */
 #scatter-story .step {
-  margin: 0 0 1rem;
-  padding: 0.5rem 0;
+  max-width: 32rem;
+  margin-block: 0.25rem 0.9rem;
+  padding: 0.25rem 0;
   line-height: 1.5;
 }
 
-/* sticky chart on the right, per spec */
+/* right column: chart on top, dots below */
 #scatter-plot {
-  position: sticky;
-  top: 0;
-  left: 0;
-  bottom: auto;
-  height: 50vh;          /* important so sticky works */
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;          /* space between graph and dots */
 }
 
-/* stack on small screens */
+/* responsive: stack columns on small screens */
 @media (max-width: 800px) {
   #scrolly-1 {
     flex-direction: column;
   }
 
   #scatter-plot {
-    position: static;
-    height: auto;
+    flex: none;
   }
 }
 
 #files {
-  margin-top: 1.5rem;   /* spacing under the chart inside the sticky column */
+  grid-template-columns: 1fr 3fr;  /* little more room for dots */
+}
+
+#files dd {
+  padding-top: 0.4em;
+  gap: 0.1em;
+}
+
+.loc {
+  width: 0.4em;       /* slightly smaller dots */
 }
