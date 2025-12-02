@@ -218,26 +218,49 @@ function renderLanguageBreakdown(selection, commits, isCommitSelected) {
 }
 
 // ---------- 6. Files list (Step 2.1) ----------
+// ---------- 6. Files list (Step 2.1 + 2.2) ----------
 function updateFileDisplay(commitsForFiles) {
+  const container = d3.select("#files");
+
+  // If no commits in range, clear and bail
+  if (!commitsForFiles.length) {
+    container.selectAll("*").remove();
+    return;
+  }
+
+  // All line-level rows from the commits in range
   const lines = commitsForFiles.flatMap((d) => d.lines);
 
+  // Group by file
   const files = d3
     .groups(lines, (d) => d.file)
     .map(([name, lines]) => ({ name, lines }));
 
-  const filesContainer = d3
-    .select("#files")
+  // One <div> wrapper per file
+  const filesContainer = container
     .selectAll("div")
     .data(files, (d) => d.name)
     .join((enter) =>
       enter.append("div").call((div) => {
-        div.append("dt").append("code");
+        div.append("dt");
         div.append("dd");
       })
     );
 
-  filesContainer.select("dt > code").text((d) => d.name);
-  filesContainer.select("dd").text((d) => `${d.lines.length} lines`);
+  // dt: filename + tiny "N lines" underneath
+  filesContainer
+    .select("dt")
+    .html((d) => {
+      return `<code>${d.name}</code><small>${d.lines.length} lines</small>`;
+    });
+
+  // dd: unit visualization — one .loc div per *line*
+  const dd = filesContainer.select("dd");
+
+  dd.selectAll("div")
+    .data((d) => d.lines)
+    .join("div")
+    .attr("class", "loc");
 }
 
 // ---------- 7. Scatterplot ----------
