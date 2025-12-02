@@ -848,3 +848,31 @@ circle:hover {
 .loc {
   width: 0.4em;       /* slightly smaller dots */
 }
+
+/* Right column is just a vertical stack: graph on top, dots below */
+#scatter-plot {
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* 🔽 dots stay pinned once they reach the top of the viewport */
+#files-sticky {
+  position: sticky;
+  top: 1rem;          /* how far from the top to “stick” */
+}
+
+/* optional: make sure the dots block doesn't get too wide */
+#files {
+  /* these can stay as you had them, just repeating the key bits */
+  display: grid;
+  grid-template-columns: 1fr 3fr;  /* filenames | dots */
+  row-gap: 0.5rem;
+}
+
+/* slightly smaller dots if you still worry about horizontal overflow */
+.loc {
+  width: 0.45em;
+  aspect-ratio: 1;
+}
