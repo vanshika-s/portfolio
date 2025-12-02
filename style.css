@@ -796,18 +796,18 @@ circle:hover {
 
 /* ---------- Scrollytelling layout: text left, viz right ---------- */
 
-/* 2-column grid: text | viz */
+/* Two columns: text | sticky viz column */
 #scrolly-1 {
-  display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 2.5fr);
-  column-gap: 2rem;
+  position: relative;
+  display: flex;
   align-items: flex-start;
+  gap: 2rem;
   margin-block: 1.5rem 3rem;
 }
 
 /* left column: commit narrative */
 #scatter-story {
-  grid-column: 1;
+  flex: 1;
 }
 
 /* commit paragraphs – tighter spacing */
@@ -818,51 +818,72 @@ circle:hover {
   line-height: 1.5;
 }
 
-/* right column: chart on top, dots below */
+/* right column: STICKY container that holds graph + dots */
 #scatter-plot {
-  grid-column: 2;
+  flex: 1.2;
+  position: sticky;
+  top: 1rem;              /* distance from top of viewport */
+  height: 80vh;           /* fills most of the viewport */
   display: flex;
   flex-direction: column;
-  gap: 2rem;   /* space between chart and dots */
+  gap: 2rem;              /* space between graph and dots */
 }
 
-/* dots block sticks once it reaches the top of the viewport */
+/* chart sits on top inside the sticky column */
+.chart-section {
+  flex: 0 0 auto;
+  transition: opacity 250ms ease, max-height 250ms ease, margin 250ms ease;
+}
+
+/* when we scroll “past the graph”, collapse it so only dots remain */
+.chart-section.hidden {
+  opacity: 0;
+  max-height: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* dots block takes the remaining space in the sticky column */
 #files-sticky {
-  position: sticky;
-  top: 1rem;   /* distance from top when “stuck” */
+  flex: 1 1 auto;
+  overflow: auto;   /* in case there are lots of files, scroll inside this area */
 }
 
 /* filenames | dots layout */
 #files {
   display: grid;
-  grid-template-columns: 1fr 3fr;
+  grid-template-columns: 1fr 3fr;  /* filenames | dots */
   row-gap: 0.5rem;
 }
 
-/* dot row styling */
+/* right column: packed unit dots */
 #files dd {
   padding-top: 0.4em;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
   gap: 0.1em;
 }
 
-/* slightly smaller dots so they don’t overflow off the right side */
+/* slightly smaller dots so they don’t overflow to the right */
 .loc {
   width: 0.45em;
   aspect-ratio: 1;
 }
 
-/* responsive: stack columns on small screens */
+/* responsive: stack on small screens */
 @media (max-width: 800px) {
   #scrolly-1 {
-    grid-template-columns: 1fr;
+    flex-direction: column;
   }
 
   #scatter-plot {
-    grid-column: 1;
+    position: static;   /* no sticky on tiny screens */
+    height: auto;
   }
 
-  /* on tiny screens, let the dots scroll away normally */
   #files-sticky {
-    position: static;
+    overflow: visible;
   }
 }

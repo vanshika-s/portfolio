@@ -551,6 +551,23 @@ function onStepEnter(response) {
 
   const stepTime = commit.datetime;
 
+  // --- NEW: decide when to hide the graph ---
+  const stepIndex = response.index;                 // which step we’re on
+  const chartSection = document.querySelector(".chart-section");
+
+  // e.g., show graph for roughly the first quarter of commits,
+  // then hide it and let the dots sit at the top.
+  const graphCutoffIndex = Math.floor(commits.length * 0.25);
+
+  if (chartSection) {
+    if (stepIndex >= graphCutoffIndex) {
+      chartSection.classList.add("hidden");
+    } else {
+      chartSection.classList.remove("hidden");
+    }
+  }
+  // --- end NEW bits ---
+
   // 1) Update global slider state + UI to match the step
   commitProgress = timeScale(stepTime); // maps Date -> 0–100
   const sliderEl = document.getElementById("commit-progress");
