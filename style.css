@@ -784,6 +784,7 @@ circle:hover {
 
 /* ---------- Scrollytelling layout ---------- */
 
+/* Scrolly layout container */
 #scrolly-1 {
   position: relative;
   display: flex;
@@ -792,16 +793,17 @@ circle:hover {
   margin-top: 2rem;
 }
 
+/* Text column */
 #scatter-story {
   position: relative;
   flex: 1;
   max-width: 32rem;
 }
 
-/* each text step */
+/* Each commit text block */
 #scatter-story .step {
-  margin: 0 0 2rem;      /* MUCH less vertical gap */
-  padding-bottom: 30vh;  /* height to trigger scroll events */
+  margin: 0 0 1.25rem;     /* small gap between steps */
+  padding: 0.5rem 0;       /* light vertical padding */
   line-height: 1.5;
 }
 
@@ -810,9 +812,6 @@ circle:hover {
   position: sticky;
   top: 0;
   left: 0;
-  height: 60vh;          /* important for sticky to work */
-  display: flex;
-  flex-direction: column;
 }
 
 /* on small screens, stack instead of 2 columns */
@@ -821,8 +820,4 @@ circle:hover {
     flex-direction: column;
   }
 
-  #scatter-plot {
-    position: static;
-    height: auto;
-  }
 }
