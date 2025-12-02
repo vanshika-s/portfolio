@@ -646,6 +646,11 @@ circle.selected {
 /* circles already have transitions from Lab 6: keep it */
 .dots circle {
   transition: all 200ms ease;
+
+  /* Step 1.4 – animate new circles from r:0 */
+  @starting-style {
+    r: 0;
+  }
 }
 
 .dots circle.selected {
