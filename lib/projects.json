@@ -1,12 +1,5 @@
 [
   {
-    "title": "Bikewatching",
-    "year": 2024,
-    "description": "An interactive map that explores Boston-area bike traffic over the course of the day using Mapbox, D3, and real Bluebikes data.",
-    "image": "images/bikewatching.png",
-    "url": "https://vanshika-s.github.io/bikewatching/"
-  },  
-  {
     "title": "When It Rains, It Pours",
     "year": "2024",
     "image": "images/1.png",
@@ -77,6 +70,13 @@
     "year": "2023",
     "image": "images/12.png",
     "description": "Organized and drafted a resource collection for students on essay structure, grammar, and drafting strategies."
-  }
+  },
+  {
+    "title": "Bikewatching",
+    "year": 2024,
+    "description": "An interactive map that explores Boston-area bike traffic over the course of the day using Mapbox, D3, and real Bluebikes data.",
+    "image": "images/bikewatching.png",
+    "url": "https://vanshika-s.github.io/bikewatching/"
+  }  
 ]
 
