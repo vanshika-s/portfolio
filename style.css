@@ -839,3 +839,7 @@ circle:hover {
     height: auto;
   }
 }
+
+#files {
+  margin-top: 1.5rem;   /* spacing under the chart inside the sticky column */
+}
