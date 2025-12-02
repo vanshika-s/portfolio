@@ -766,3 +766,18 @@ circle:hover {
   background: steelblue;
   border-radius: 50%;
 }
+
+/* brush selection rectangle */
+.brush .selection {
+  fill: rgba(37, 99, 235, 0.15);   /* translucent blue */
+  stroke: black;
+  stroke-opacity: 0.7;
+  stroke-dasharray: 5 3;
+  animation: marching-ants 2s linear infinite;
+}
+
+/* the big invisible hit-area for brushing */
+.brush .overlay {
+  fill: transparent;
+  cursor: crosshair;
+}

@@ -332,7 +332,7 @@ function renderScatterPlot(data, commits) {
     .attr("viewBox", `0 0 ${width} ${height}`)
     .style("overflow", "visible");
 
-  // shared scales
+  // shared scales (saved into globals xScale / yScale)
   xScale = d3
     .scaleTime()
     .domain(d3.extent(commits, (d) => d.datetime))
@@ -389,15 +389,16 @@ function renderScatterPlot(data, commits) {
   const sortedCommits = d3.sort(commits, (d) => -d.totalLines);
   const dots = svg.append("g").attr("class", "dots");
 
+  // dots + tooltip
   dots
     .selectAll("circle")
-    .data(sortedCommits, (d) => d.id) // key = commit id (1.3)
+    .data(sortedCommits, (d) => d.id)
     .join("circle")
     .attr("cx", (d) => xScale(d.datetime))
     .attr("cy", (d) => yScale(d.hourFrac))
     .attr("r", function (d) {
       const r = rScale(d.totalLines);
-      this.style.setProperty("--r", r); // for CSS timing if you want it
+      this.style.setProperty("--r", r); // for CSS timing
       return r;
     })
     .attr("fill", "steelblue")
@@ -415,8 +416,39 @@ function renderScatterPlot(data, commits) {
       d3.select(event.currentTarget).style("fill-opacity", 0.7);
       updateTooltipVisibility(false);
     });
-    // hook up brushing / selection
-    createBrushSelector(svg, dots, xScale, yScale, commits);
+
+  // ----- brush (selection rectangle) -----
+  const brush = d3
+    .brush()
+    .extent([
+      [usableArea.left, usableArea.top],
+      [usableArea.right, usableArea.bottom],
+    ])
+    .on("start brush end", brushed);
+
+  const brushG = svg.append("g").attr("class", "brush").call(brush);
+
+  // put the brush *behind* the dots so hover still works
+  brushG.lower();
+
+  function isCommitSelected(selection, commit) {
+    if (!selection) return false;
+    const [[x0, y0], [x1, y1]] = selection;
+    const cx = xScale(commit.datetime);
+    const cy = yScale(commit.hourFrac);
+    return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
+  }
+
+  function brushed(event) {
+    const selection = event.selection;
+
+    dots
+      .selectAll("circle")
+      .classed("selected", (d) => isCommitSelected(selection, d));
+
+    renderSelectionCount(selection, commits, isCommitSelected);
+    renderLanguageBreakdown(selection, commits, isCommitSelected);
+  }
 }
 
 function updateScatterPlot(data, commits) {
